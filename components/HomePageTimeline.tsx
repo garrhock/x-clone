@@ -56,6 +56,9 @@ const HomePageTimeline = () => {
                                 <div className = "flex flex-col items-stretch">
                                     <div className = "px-[16px] items-stretch flex flex-col">
                                         <div className = "flex flex-row items-stretch w-full">
+                                            <div className="px-[16px] py-[12px] border-b border-border">
+                                                <PostForm />
+                                            </div>
                                             {/* Profile Section of User post*/}
                                             <div className="pt-[12px] basis-[40px] mr-[8px] flex flex-col">
                                                 {/* Avatar */}
@@ -90,14 +93,14 @@ const HomePageTimeline = () => {
                                                             <div className = "basis-0 h-full items-center flex flex-row grow">
                                                                 <div className = "overflow-hidden shrink-1 grow-1 h-full block items-stretch">
                                                                     <div className = "scroll-px-[36px] flex-nowrap overflow-x-auto overflow-y-hidden h-full flex flex-row flex-grow p-[2px] items-stretch">
-                                                                        {TOOLBAR_ITEMS.map((item, index) => (
-                                                                        <div className="justify-center items-stretch flex flex-col">
-                                                                            <button className = "cursor-pointer min-h-[36px] min-w-[36px] rounded-full ">
-                                                                                <div className = "text-highlight text-[15px]/[20px] font-bold wrap-break-word text-center min-w-0 flex flex-row justify-center flex-grow">
-                                                                                    <item.icon className = "relative h-[20px] align-bottom max-w-[100%] w-[20px] inline-block"/>
-                                                                                </div>
+                                                                        {TOOLBAR_ITEMS.map((item) => (
+                                                                          <div key={item.title} className="justify-center items-stretch flex flex-col">
+                                                                            <button className="cursor-pointer min-h-[36px] min-w-[36px] rounded-full ">
+                                                                              <div className="text-highlight text-[15px]/[20px] font-bold wrap-break-word text-center min-w-0 flex flex-row justify-center flex-grow">
+                                                                                <item.icon className="relative h-[20px] align-bottom max-w-[100%] w-[20px] inline-block" />
+                                                                              </div>
                                                                             </button>
-                                                                        </div>
+                                                                          </div>
                                                                         ))}
                                                                     </div>
                                                                 </div>
