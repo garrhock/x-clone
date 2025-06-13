@@ -12,7 +12,7 @@ const RightSideBar = () => {
                         {/* Search */}
                         <div className="mb-[12px] h-[53px] w-[350px] items-center flex-row min-h-[32px] ">
                             <form action="#" >
-                                <div className = "min-h-[40px] flex flex-col justify-center border-1 border-border rounded-full focus-within:ring-highlight focus-within:ring-2 transition-colors flex-grow">
+                                <div className = "min-h-[40px] flex flex-col justify-center border border-border rounded-full focus-within:ring-highlight focus-within:ring-2 transition-colors flex-grow">
                                     <div className = "items-center flex flex-row cursor-text ">
                                         {/* Search Icon */}
                                         <div className = "justify-center flex flex-col ">
@@ -39,7 +39,7 @@ const RightSideBar = () => {
                             </form>
                         </div>
                         {/*What's happening */}
-                        <div className = "mb-[16px] bg-background border-1 border-border rounded-2xl ">
+                        <div className = "mb-[16px] bg-background border border-border rounded-2xl ">
                             <div className = "flex flex-col items-stretch">
                                 <div>
                                     <div className = "px-[16px] py-[12px] justify-center">
@@ -189,7 +189,7 @@ const RightSideBar = () => {
                             </div>
                         </div>
                         {/* Who to follow */}
-                        <div className = "mb-[16px] bg-background border-1 border-border rounded-2xl ">
+                        <div className = "mb-[16px] bg-background border border-border rounded-2xl ">
                             <div className = "flex flex-col items-stretch">
                                 {/* Title */}
                                 <div>

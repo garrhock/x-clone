@@ -43,8 +43,9 @@ export default function SignUpForm() {
       });
       if (error) throw error;
       // Optionally, redirect to a "check your email" page if email confirmation is enabled
-      router.push("/");
+      router.push("/app");
     } catch (err: any) {
+      console.error("Sign up error:", err);
       setError(err.message || "Failed to sign up");
     } finally {
       setLoading(false);

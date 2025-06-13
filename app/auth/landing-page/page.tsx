@@ -1,44 +1,45 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/lib/supabase/client";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import SignUpForm from "@/components/sign-up-form";
+import LoginForm from "@/components/login-form";
+import { BsTwitterX } from "react-icons/bs";
 
 export default function LandingPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    // Check if user is authenticated and redirect if so
-    const checkAuth = async () => {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        router.replace("/app"); // or your main app route
-      }
-    };
-    checkAuth();
-  }, [router]);
+  const [modal, setModal] = useState<"signup" | "login" | null>(null);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center gap-8">
-      <div className="text-center">
-        <h1 className="text-3xl font-bold mb-4">Create an Account</h1>
+    <main className="bg-background flex min-h-screen items-center justify-center">
+      <div className="w-full max-w-sm flex flex-col gap-6">
+        <BsTwitterX className = "pb-[24px] size-16 align-bottom max-w-full self-center"/>
+        <h1 className="text-3xl font-bold text-center">Create an Account</h1>
         <button
-          className="bg-blue-600 text-white rounded px-6 py-2 font-semibold mb-6"
-          onClick={() => router.push("/auth/sign-up")}
+          className="w-full bg-foreground text-background border  rounded-full px-4 py-3 font-semibold text-lg shadow-sm hover:bg-gray-50 transition"
+          onClick={() => setModal("signup")}
         >
           Sign Up
         </button>
-      </div>
-      <div className="text-center">
-        <p className="mb-2">Already have an account?</p>
+        <div className="text-center text-gray-500">OR</div>
         <button
-          className="bg-gray-200 text-gray-900 rounded px-6 py-2 font-semibold"
-          onClick={() => router.push("/auth/login")}
+          className="w-full bg-foreground text-background border  rounded-full px-4 py-3 font-semibold text-lg shadow-sm hover:bg-gray-50 transition"
+          onClick={() => setModal("login")}
         >
           Login
         </button>
       </div>
+
+      <Dialog open={modal !== null} onOpenChange={open => !open && setModal(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {modal === "signup" ? "Sign Up" : "Login"}
+            </DialogTitle>
+          </DialogHeader>
+          {modal === "signup" && <SignUpForm />}
+          {modal === "login" && <LoginForm />}
+        </DialogContent>
+      </Dialog>
     </main>
   );
 }
