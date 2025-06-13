@@ -2,20 +2,24 @@
 
 import { createClient } from '@/lib/supabase/server'
 
-export async function postTweet(formData: FormData) {
+export async function post(formData: FormData) {
   const supabase = await createClient()
+  const content = formData.get('content') as string
+  const fileUrls = formData.getAll('file_urls[]') as string[]
+
   const { data: { user } } = await supabase.auth.getUser()
 
   if (!user) throw new Error('Not logged in')
 
-  const text = formData.get('content') as string
-
-  const { error } = await supabase.from('tweets').insert({
-    user_id: user.id,
-    text, // <-- use 'text' here
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString()
-  })
+  const { error } = await supabase
+    .from('posts')
+    .insert({
+      user_id: user.id,
+      text: content,
+      file_urls: fileUrls,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
+    })
 
   if (error) throw new Error(error.message)
 }
