@@ -17,8 +17,8 @@ const NAVIGATION_ITEMS = [
 
 const LeftSideBar = () => {
   return (
-    <header className="flex flex-col items-end ">
-      <div className="w-[275px] ml-[60px] items-stretch flex flex-col ">
+    <header className="flex flex-col items-end flex-grow">
+      <div className="w-[275px] ml-[52px] items-stretch flex flex-col ">
         <div className=" fixed top-0 h-full items-stretch flex flex-col">
           <div className="justify-between w-[275px] h-full overflow-y-auto">
             <div className= "top-0 h-[100%] flex flex-col justify-between px-[8px]">

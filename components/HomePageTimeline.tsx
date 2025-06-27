@@ -1,16 +1,10 @@
 import React from 'react'
 import PostForm from './posts/post-form'
-import { BsChat,  } from "react-icons/bs";
-import { AiOutlineRetweet, AiOutlineHeart } from "react-icons/ai";
-import { IoStatsChart } from "react-icons/io5";
-import { IoShareOutline } from "react-icons/io5";
 import { MdPhoto } from "react-icons/md";
 import { AiOutlineGif } from "react-icons/ai";
 import { BiPoll } from "react-icons/bi";
 import { HiOutlineEmojiHappy } from "react-icons/hi";
 import { RiCalendarScheduleLine } from "react-icons/ri";
-import { MdMoreHoriz } from "react-icons/md";
-import { IoBookmarkOutline } from "react-icons/io5";
 import RightSideBar from './RightSideBar';
 import Timeline from './posts/get-timeline';
 
@@ -25,7 +19,7 @@ const TOOLBAR_ITEMS = [
 
 const HomePageTimeline = () => {
     return (
-         <main className = "w-full h-full flex flex-col items-start">
+         <main className = "w-full h-full flex flex-col items-start flex-grow flex-shrink">
             <div className = "w-[1050px] items-stretch flex flex-col flex-grow flex-shrink ">
                 <div className= "justify-between items-stretch flex flex-row flex-grow w-full ">
                     <div className="max-w-[600px] flex flex-col border-l-[1px] border-r-[1px] border-border flex-grow w-full">

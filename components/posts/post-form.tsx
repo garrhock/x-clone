@@ -2,19 +2,9 @@
 
 import { useState } from 'react'
 import { post } from './actions'
-import { MdPhoto } from "react-icons/md";
-import { AiOutlineGif } from "react-icons/ai";
-import { BiPoll } from "react-icons/bi";
-import { HiOutlineEmojiHappy } from "react-icons/hi";
-import { RiCalendarScheduleLine } from "react-icons/ri";
 import { createClient } from '@/lib/supabase/client'
-const TOOLBAR_ITEMS = [
-  { title: 'Media', icon: MdPhoto },
-  { title: 'GIF', icon: AiOutlineGif  },
-  { title: 'Poll', icon: BiPoll },
-  { title: 'Emoji', icon: HiOutlineEmojiHappy },
-  { title: 'Schedule', icon: RiCalendarScheduleLine },
-];
+import PostToolBar from '@/components/posts/post-toolbar';
+import ProfilePicture from '../profile/profile-picture';
 
 export default function PostForm() {
   const [content, setContent] = useState('')
@@ -60,15 +50,7 @@ export default function PostForm() {
     <form onSubmit={handleSubmit} className="flex flex-row items-stretch w-full">
       {/* Avatar */}
       <div className="pt-[12px] basis-[40px] mr-[8px] flex flex-col">
-        <div className="relative h-[40px] w-[40px]">
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full h-full">
-            <img
-              src="https://pbs.twimg.com/profile_images/1880129627672219648/alLHN898_normal.jpg"
-              alt="User avatar"
-              className="w-full h-full rounded-full object-cover"
-            />
-          </div>
-        </div>
+        <ProfilePicture/>
       </div>
       {/* Text & Toolbar */}
       <div className="flex flex-col pt-[4px] justify-center basis-0 flex-grow static">
@@ -82,33 +64,10 @@ export default function PostForm() {
           required
           disabled={isPosting}
         />
-        <input
-          type="file"
-          accept="image/*,video/*"
-          multiple
-          onChange={e => setFiles(e.target.files)}
-          className="my-2"
-        />
         <div className="sticky bottom-[-1px] pb-[8px] top-0 flex flex-col">
           <div className="justify-between items-center flex flex-row w-full">
             {/* Toolbar */}
-            <nav className="mt-[8px] ml-[-8px] flex-1 items-center flex flex-row">
-              <div className="basis-0 h-full items-center flex flex-row grow">
-                <div className="overflow-hidden shrink-1 grow-1 h-full block items-stretch">
-                  <div className="scroll-px-[36px] flex-nowrap overflow-x-auto overflow-y-hidden h-full flex flex-row flex-grow p-[2px] items-stretch">
-                    {TOOLBAR_ITEMS.map((item) => (
-                      <div key={item.title} className="justify-center items-stretch flex flex-col">
-                        <button type="button" className="cursor-pointer min-h-[36px] min-w-[36px] rounded-full ">
-                          <div className="text-highlight text-[15px] font-bold wrap-break-word text-center min-w-0 flex flex-row justify-center flex-grow">
-                            <item.icon className="relative h-[20px] align-bottom max-w-[100%] w-[20px] inline-block" />
-                          </div>
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </nav>
+            <PostToolBar/>
             {/* Post Button */}
             <div className="mt-[8px] items-center flex flex-row">
               <button
