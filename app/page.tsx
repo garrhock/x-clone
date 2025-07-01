@@ -1,6 +1,6 @@
 
-import LeftSideBar from "@/components/LeftSideBar";
-import HomePageTimeline from "@/components/HomePageTimeline";
+import LeftSideBar from "@/components/left-sidebar/LeftSideBar";
+import HomePageTimeline from "@/components/Timeline/HomePageTimeline";
 
 export default function Home() {
   return (

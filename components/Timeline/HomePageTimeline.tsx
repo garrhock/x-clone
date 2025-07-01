@@ -1,12 +1,13 @@
 import React from 'react'
-import PostForm from './posts/post-form'
+import PostForm from '../posts/post-form'
 import { MdPhoto } from "react-icons/md";
 import { AiOutlineGif } from "react-icons/ai";
 import { BiPoll } from "react-icons/bi";
 import { HiOutlineEmojiHappy } from "react-icons/hi";
 import { RiCalendarScheduleLine } from "react-icons/ri";
-import RightSideBar from './RightSideBar';
-import Timeline from './posts/get-timeline';
+import RightSideBar from '../right-sidebar/RightSideBar';
+import Timeline from '../posts/get-timeline';
+import { Subheading } from '../text';
 
 const TOOLBAR_ITEMS = [
   { title: 'Media', icon: MdPhoto },
@@ -37,8 +38,10 @@ const HomePageTimeline = () => {
                             <div className = "flex-grow flex flex-col">
                                 <a className = "min-w-[56px] h-[53px] flex flex-col cursor-pointer items-center justify-center px-[16px] hover:bg-white/5 transition">
                                     <div className = "items-stretch flex flex-col">
-                                        <div className = "relative py-[16px] text-[15px]/[20px] font-bold wrap-break-word h-full items-center flex flex-col justify-center">
-                                            <span className = "wrap-break-word min-w-0">Following</span>
+                                        <div className = "relative py-[16px] h-full items-center flex flex-col justify-center">
+                                            <Subheading>
+                                                Following
+                                            </Subheading>
                                             <div className = "bg-highlight min-w-[56px] h-[4px] absolute bottom-0 self-center w-full inline-flex rounded-full"></div>
                                         </div>
                                     </div>
@@ -46,7 +49,7 @@ const HomePageTimeline = () => {
                             </div>
                         </div>
 
-                        {/* Post=Form Area*/}
+                        {/* Post-Form Area*/}
                         <div className="flex flex-col items-stretch">
                             <div className="pt-[4px] items-stretch flex flex-col ">
                                 <div className = "flex flex-col items-stretch">

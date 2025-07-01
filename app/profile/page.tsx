@@ -1,9 +1,13 @@
 
-import LeftSideBar from "@/components/LeftSideBar";
-import RightSideBar from '@/components/RightSideBar';
-
+import LeftSideBar from "@/components/left-sidebar/LeftSideBar";
+import RightSideBar from '@/components/right-sidebar/RightSideBar';
 import { IoArrowBackOutline } from "react-icons/io5";
 import { GoSearch  } from "react-icons/go";
+import { Heading } from "@/components/text";
+import { Description } from "@/components/text";
+import ProfilePicture from "@/components/profile/profile-picture";
+import EditProfileButton from "@/components/profile/edit-profile-button";
+
 export default function Home() {
   return (
     <div className="w-full h-screen flex justify-center items-center relative bg-black text-white">
@@ -13,8 +17,8 @@ export default function Home() {
             <div className = "w-[1050px] items-stretch flex flex-col flex-grow flex-shrink ">
                 <div className= "justify-between items-stretch flex flex-row flex-grow w-full ">
                     <div className="max-w-[600px] flex flex-col border-l-[1px] border-r-[1px] border-border flex-grow w-full">
-                        <div className = "flex flex-row align- items-stretch z-10 justify-around backdrop-blur-md bg-background/75 sticky top-0 border-b-[0.5px] border-border">
-                            
+                        {/* Top Bar*/}
+                        <div className = "flex flex-row align- items-stretch z-10 justify-around backdrop-blur-md bg-background/75 sticky top-0 border-b-[0.5px] border-border">                 
                             <div className="flex flex-row items-center justify-between w-full px-4 h-[53px]">
                                 {/* Back Button */}
                                 <div className = "flex flex-col min-w-[56px] min-h-[32px] align-stretch items-start justify-center ">
@@ -26,12 +30,12 @@ export default function Home() {
                                 </div>
                                 {/* Name + num posts */}
                                 <div className = "flex flex-col flex-grow">
-                                    <div className = "relative text-[20px]/[24px] font-bold wrap-break-word h-full items-start flex flex-col justify-center">
-                                        <span className = "py-[2px] wrap-break-word max-w-full">Garrett Hockersmith</span>
+                                    <div className = "relative h-full items-start flex flex-col justify-center">
+                                        <div className = "py-[2px] max-w-full">
+                                            <Heading>Garrett Hockersmith</Heading>
+                                        </div>
                                     </div>
-                                    <div className = "text-muted text-[13px]/[17px] font-normal ">
-                                        <span>0 posts</span>
-                                    </div>
+                                    <Description>0 posts</Description>
                                 </div>
                                 {/* Search */}
                                <div className = "flex flex-col min-w-[56px] min-h-[32px] align-stretch items-end justify-center ">
@@ -42,7 +46,40 @@ export default function Home() {
                                     </button>
                                 </div>
                             </div>
-                            
+                        </div>
+                        {/* Page Content */}
+                        <div className = "flex flex-col w-full h-full">
+                            {/* Banner */}
+                            <div>
+                               <img src="https://pbs.twimg.com/profile_banners/1880124371228065792/1737092855/1080x360" alt="" />
+                            </div>
+                            {/* Info */}
+                            <div>
+                                {/* Avatar & Edit Profile*/}
+                                <div className = "flex flex-row items-center justify-between px-4 pt-4">
+                                    <div>
+                                        <ProfilePicture/>
+                                    </div>
+                                    <div>
+                                        <EditProfileButton/>
+                                    </div>
+                                </div>
+                                {/* Name & tag */}
+                                <div></div>
+                                {/* Bio */}
+                                <div></div>
+                                {/* Stats */}
+                                <div></div>
+                                {/* following & followers */}
+                                <div></div>
+                                {/* whos following */}
+                                <div></div>
+                            </div>
+                            {/* Nav */}
+                            <div></div>
+                            {/* Posts */}
+                            <section>
+                            </section>
                         </div>
                     </div>
                     <RightSideBar/>
