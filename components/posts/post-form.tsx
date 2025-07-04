@@ -1,16 +1,33 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { post } from './actions'
 import { createClient } from '@/lib/supabase/client'
 import PostToolBar from '@/components/posts/post-toolbar';
-import ProfilePicture from '../profile/profile-picture';
+import ProfilePicture from '../profile/profile-picture-sm';
 
 export default function PostForm() {
   const [content, setContent] = useState('')
   const [isPosting, setIsPosting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [files, setFiles] = useState<FileList | null>(null)
+  const [user, setUser] = useState<any>(null)
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", user.id)
+          .single()
+        setUser(profile)
+      }
+    }
+    fetchUser()
+  }, [])
 
   const supabase = createClient()
 
@@ -46,11 +63,15 @@ export default function PostForm() {
     }
   }
 
+  if (!user) {
+    return null // or a loading spinner
+  }
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-row items-stretch w-full">
       {/* Avatar */}
       <div className="pt-[12px] basis-[40px] mr-[8px] flex flex-col">
-        <ProfilePicture/>
+        <ProfilePicture userId={user.id} avatarUrl={user.avatar_url} />
       </div>
       {/* Text & Toolbar */}
       <div className="flex flex-col pt-[4px] justify-center basis-0 flex-grow static">

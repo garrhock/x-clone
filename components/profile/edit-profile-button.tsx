@@ -1,14 +1,13 @@
-import Heading from "@/components/text/heading";
+import { Subheading } from "@/components/text"
 
-export default function EditProfileButton() {
+export default function EditProfileButton({ onClick }: { onClick?: () => void }) {
     return (
-        <div className = "min-w-[78px] ml-[12px] ">
-            <button className='bg-foreground cursor-pointer px-[16px] min-h-[32px] min-w-[32px] border-transparent rounded-full '>
-                <div className = "text-background text-[15px]/[20px] font-bold wrap-break-word justify-center text-center grow ">
-                    <span>Follow</span>
-                </div>
+        <div className="mb-3 px-4 min-h-9 min-w-9 border border-muted rounded-full bg-transparent cursor-pointer flex grow">
+            <button onClick={onClick}>
+                <Subheading>Edit profile</Subheading>
             </button>
         </div>
+        
     );
 }
 

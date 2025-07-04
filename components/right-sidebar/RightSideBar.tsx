@@ -1,11 +1,26 @@
 'use client'
 import React from 'react'
+import { useEffect, useState } from "react";
 import { MdMoreHoriz } from 'react-icons/md'
 import { Container } from '@/components/right-sidebar'
 import { Heading, Subheading, Description } from '@/components/text'
-import { ProfilePicture, NameAndTag, FollowButton } from '@/components/profile'
+import { ProfilePictureSM, NameAndTag, FollowButton } from '@/components/profile'
 import SearchBar from '@/components/ui/search-bar'
+import { createClient } from '@/lib/supabase/client'
 const RightSideBar = () => {
+    const [suggestedUsers, setSuggestedUsers] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            const supabase = createClient(); // <-- no await
+            const { data, error } = await supabase
+                .from("profiles")
+                .select("id, full_name, username, avatar_url")
+                .limit(5);
+            if (!error && data) setSuggestedUsers(data);
+        };
+        fetchUsers();
+    }, []);
   return (
     <div className = "max-w-[350px] w-full mr-[70px]">
         <div className = "min-h-[1246.19px] h-full ">
@@ -106,52 +121,22 @@ const RightSideBar = () => {
                             </div>
                             {/* Suggested Following List */}
                             <ul role='list'>
-                                <li role='listitem' className = "py-[12px] px-[16px] cursor-pointer">
-                                    <div className = "flex flex-row flex-grow">
-                                        {/* Pfp */}
-                                        <div className = "mr-2">
-                                            <ProfilePicture/>
-                                        </div>
-                                        {/* Username  */}
-                                        <div className = "flex flex-row justify-between w-full">
-                                            <div className = "flex flex-col">
-                                                <NameAndTag/>
+                                {suggestedUsers.map(user => (
+                                    <li key={user.id} role='listitem' className="py-[12px] px-[16px] cursor-pointer">
+                                        <div className="flex flex-row flex-grow">
+                                            <div className="mr-2">
+                                                <ProfilePictureSM userId={user.id} avatarUrl={user.avatar_url} />
                                             </div>
-                                            {/* Follow button */}
-                                            <FollowButton/>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li role='listitem' className = "py-[12px] px-[16px] cursor-pointer">
-                                    <div className = "flex flex-row flex-grow">
-                                        {/* Pfp */}
-                                        <div className = "mr-2">
-                                            <ProfilePicture/>
-                                        </div>
-                                        {/* Username  */}
-                                        <div className = "flex flex-row justify-between w-full">
-                                            <NameAndTag/>
-                                            {/* Follow button */}
-                                            <FollowButton/>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li role='listitem' className = "py-[12px] px-[16px] cursor-pointer">
-                                    <div className = "flex flex-row flex-grow">
-                                        {/* Pfp */}
-                                        <div className = "mr-2">
-                                            <ProfilePicture/>
-                                        </div>
-                                        {/* Username  */}
-                                        <div className = "flex flex-row justify-between w-full">
-                                            <div className = "flex flex-col">
-                                                <NameAndTag />
+                                            <div className="flex flex-row justify-between w-full">
+                                                <div className="flex flex-col">
+                                                    <span className="font-bold">{user.full_name}</span>
+                                                    <span className="text-muted">@{user.username}</span>
+                                                </div>
+                                                <FollowButton />
                                             </div>
-                                            {/* Follow button */}
-                                            <FollowButton/>
                                         </div>
-                                    </div>
-                                </li>
+                                    </li>
+                                ))}
                             </ul>
                         </Container>
                     </div>
