@@ -10,14 +10,10 @@ import { createClient } from "@/lib/supabase/client";
 import {
   Sidebar,
   SidebarProvider,
-  SidebarHeader,
   SidebarMenu,
-  SidebarMenuItem,
-  SidebarMenuButton,
-  SidebarFooter,
-  SidebarSeparator,
 } from "@/components/ui/sidebar";
-import { Description, Heading, Subheading } from "../text";
+import Text from "@/components/text";
+import { getProfileById } from "@/lib/supabase/queries/get-profile";
 
 const NAVIGATION_ITEMS = [
   { title: "Home", icon: GoHomeFill, href: "/" },
@@ -32,19 +28,14 @@ const LeftSideBar = () => {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const supabase = createClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        const { data: profile } = await supabase
-          .from("profiles")
-          .select("*")
-          .eq("id", user.id)
-          .single();
-        setUser(profile);
-      }
-    };
-    fetchUser();
+    const supabase = createClient();
+    async function fetchProfile() {
+      const { data: { user: authUser } } = await supabase.auth.getUser();
+      if (!authUser) return;
+      const profile = await getProfileById(authUser.id);
+      if (profile) setUser(profile);
+    }
+    fetchProfile();
   }, []);
 
   return (
@@ -68,7 +59,7 @@ const LeftSideBar = () => {
                       <div className="flex flex-row p-3">
                         <item.icon className=" !w-[26.25px] !h-[26.25px] "/>
                         <div className="flex items-center ml-5 mr-4">
-                          <Heading>{item.title}</Heading>
+                          <Text variant = "heading" color = "foreground">{item.title}</Text>
                         </div>
                       </div>
                     </Link>
@@ -81,7 +72,7 @@ const LeftSideBar = () => {
                       <div className = "flex flex-row p-3">
                         <BiUser className=" !w-[26.25px] !h-[26.25px] "/>
                         <div className="flex items-center ml-5 mr-4">
-                          <Heading>Profile</Heading>
+                          <Text variant = "heading" color = "foreground">Profile</Text>
                         </div>
                       </div>
                     </Link>
@@ -104,12 +95,12 @@ const LeftSideBar = () => {
                     />
                   </div>
                   <div className="flex flex-col align-center min-w-0 mx-3 flex-1 w-full">
-                    <Subheading>
+                    <Text variant = "subheading" color = "foreground">
                       <span className="whitespace-nowrap overflow-ellipsis block">{user.full_name}</span>
-                    </Subheading>
-                    <Subheading>
+                    </Text>
+                    <Text variant = "subheading" color = "foreground">
                       <span className="text-muted font-normal">@{user.username}</span>
-                    </Subheading>
+                    </Text>
                   </div>
                   <div className="items-end flex-grow fill-foreground align-bottom h-5 flex justify-end">
                     <BsThreeDots />

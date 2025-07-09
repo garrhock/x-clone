@@ -3,7 +3,8 @@ import { AiOutlineHeart, AiOutlineRetweet } from "react-icons/ai";
 import { BsChat } from "react-icons/bs";
 import { IoBookmarkOutline, IoShareOutline, IoStatsChart } from "react-icons/io5";
 import { MdMoreHoriz } from "react-icons/md";
-import { ProfilePictureSM } from "../profile";
+import { ProfilePicture } from "../profile";
+import type { Post, Profile } from "@/lib/supabase/types";
 
 function timeSince(dateString: string) {
   const now = new Date();
@@ -28,7 +29,7 @@ function timeSince(dateString: string) {
 }
 
 export default async function Timeline() {
-  const posts = await fetchPosts();
+  const posts: Post[] = await fetchPosts();
 
   if (!posts.length) {
     return (
@@ -41,10 +42,8 @@ export default async function Timeline() {
       <section className="flex flex-col items-stretch">
         <div className="relative min-h-screen">
           {posts.map((post) => {
-            // Ensure post.profiles is a single object, not an array
-            const userProfile = Array.isArray(post.profiles)
-              ? post.profiles[0]
-              : post.profiles;
+            // userProfile is always a Profile object due to types
+            const userProfile: Profile = post.profiles;
 
             return (
               <div key={post.id} className="border-b-[1px] block border-border">
@@ -59,9 +58,10 @@ export default async function Timeline() {
                       <div className="flex flex-row items-stretch">
                         {/* Profile Picture */}
                         <div className="basis-[40px] flex-grow-0 items-center mr-[8px]">
-                          <ProfilePictureSM
+                          <ProfilePicture
                             userId={userProfile?.id || ""}
                             avatarUrl={userProfile?.avatar_url || ""}
+                            size="sm"
                           />
                         </div>
                         {/* Post Content */}
@@ -74,7 +74,7 @@ export default async function Timeline() {
                                 <div className="max-w-full shrink-1 outline-none">
                                   <div className="max-w-full items-center flex flex-row">
                                     {/* Name */}
-                                    <a href="">
+                                    <a href={`/profile/${userProfile.id}`}>
                                       <div className="text-[15px]/[20px] font-bold min-w-0 items-center text-white wrap-break-word overflow-hidden">
                                         <span className="min-w-0 overflow-ellipsis">
                                           <span className="min-w-0">
@@ -88,7 +88,7 @@ export default async function Timeline() {
                                       <div className="items-baseline flex flex-row">
                                         {/* @ */}
                                         <div className="max-w-full">
-                                          <a href="" className="cursor-pointer">
+                                          <a href={`/profile/${userProfile.id}`} className="cursor-pointer">
                                             <div className="text-muted text-[15px]/[20px] font-normal min-w-0 items-center wrap-break-word overflow-hidden">
                                               <span className="wrap-break-word min-w-0">
                                                 @{userProfile?.username || "unknown"}
@@ -102,7 +102,7 @@ export default async function Timeline() {
                                         </div>
                                         {/* time */}
                                         <div className="shrink-0 flex flex-row">
-                                          <a href="" className="gap-[4px] flex-wrap text-muted shrink-0 text-[15px]/[20px] wrap-break-word min-w-0 cursor-pointer font-normal inline-flex">
+                                          <a href="#" className="gap-[4px] flex-wrap text-muted shrink-0 text-[15px]/[20px] wrap-break-word min-w-0 cursor-pointer font-normal inline-flex">
                                             <time dateTime={post.created_at}>
                                               {timeSince(post.created_at)}
                                             </time>
@@ -152,7 +152,7 @@ export default async function Timeline() {
                                   <BsChat className="w-[1.25em] max-w-full align-text-bottom fill-muted relative h-[1.25em] inline-block" />
                                   {/* Amt. */}
                                   <div className="min-w-[calc(1em+24px)] wrap-break-word text-[13px]/[16px] px-[4px]">
-                                    <span className="min-w-0 wrap-break-word">100</span>
+                                    <span className="min-w-0 wrap-break-word">{post.comments}</span>
                                   </div>
                                 </div>
                               </button>
@@ -164,7 +164,7 @@ export default async function Timeline() {
                                   <AiOutlineRetweet className="w-[1.25em] max-w-full align-text-bottom fill-muted relative h-[1.25em] inline-block" />
                                   {/* Amt. */}
                                   <div className="min-w-[calc(1em+24px)] wrap-break-word text-[13px]/[16px] px-[4px]">
-                                    <span className="min-w-0 wrap-break-word">100</span>
+                                    <span className="min-w-0 wrap-break-word">{post.reposts}</span>
                                   </div>
                                 </div>
                               </button>
@@ -176,7 +176,7 @@ export default async function Timeline() {
                                   <AiOutlineHeart className="w-[1.25em] max-w-full align-text-bottom fill-muted relative h-[1.25em] inline-block" />
                                   {/* Amt. */}
                                   <div className="min-w-[calc(1em+24px)] wrap-break-word text-[13px]/[16px] px-[4px]">
-                                    <span className="min-w-0 wrap-break-word">100</span>
+                                    <span className="min-w-0 wrap-break-word">{post.likes}</span>
                                   </div>
                                 </div>
                               </button>
@@ -188,7 +188,7 @@ export default async function Timeline() {
                                   <IoStatsChart className="w-[1.25em] max-w-full align-text-bottom fill-muted relative h-[1.25em] inline-block" />
                                   {/* Amt. */}
                                   <div className="min-w-[calc(1em+24px)] wrap-break-word text-[13px]/[16px] px-[4px]">
-                                    <span className="min-w-0 wrap-break-word">100</span>
+                                    <span className="min-w-0 wrap-break-word">{post.views}</span>
                                   </div>
                                 </div>
                               </button>

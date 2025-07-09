@@ -1,8 +1,7 @@
 'use client';
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { createClient } from "@/lib/supabase/client";
-
+import { getProfileById } from "@/lib/supabase/queries/get-profile";
 type BannerProps = {
   userId: string;
   size?: "full" | "compact";
@@ -14,19 +13,10 @@ export default function Banner({ userId, size = "full" }: BannerProps) {
 
   useEffect(() => {
     const fetchBanner = async () => {
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("banner_url")
-        .eq("id", userId)
-        .single();
-
-      if (!error && data?.banner_url) {
-        setSrc(data.banner_url);
-      }
+      const profile = await getProfileById(userId);
+      if (profile) setSrc(profile.banner_url);
     };
-
-    fetchBanner();
+    if (userId) fetchBanner();
   }, [userId]);
 
   return (

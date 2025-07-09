@@ -7,8 +7,7 @@ import { HiOutlineEmojiHappy } from "react-icons/hi";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import RightSideBar from '../right-sidebar/RightSideBar';
 import Timeline from '../posts/get-timeline';
-import { Subheading } from '../text';
-
+import Text from '../text';
 const TOOLBAR_ITEMS = [
   { title: 'Media', icon: MdPhoto },
   { title: 'GIF', icon: AiOutlineGif  },
@@ -39,9 +38,9 @@ const HomePageTimeline = () => {
                                 <a className = "min-w-[56px] h-[53px] flex flex-col cursor-pointer items-center justify-center px-[16px] hover:bg-white/5 transition">
                                     <div className = "items-stretch flex flex-col">
                                         <div className = "relative py-[16px] h-full items-center flex flex-col justify-center">
-                                            <Subheading>
+                                            <Text variant = "subheading" color = "foreground">
                                                 Following
-                                            </Subheading>
+                                            </Text>
                                             <div className = "bg-highlight min-w-[56px] h-[4px] absolute bottom-0 self-center w-full inline-flex rounded-full"></div>
                                         </div>
                                     </div>

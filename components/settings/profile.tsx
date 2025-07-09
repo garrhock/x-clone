@@ -1,12 +1,17 @@
 import React from "react";
 import { IoCloseOutline } from "react-icons/io5";
-import Heading from "../text/heading";
-import ProfilePictureLG from "../profile/profile-picture-lg";
-import Banner from "../profile/profile-banner";
-import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
-const ProfileSettings: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClose }) => {
-  if (!open) return null;
+import Text from "@/components/text";
+import ProfilePicture from "@/components/profile/avatar";
 
+interface ProfileSettingsProps {
+  open: boolean;
+  onClose: () => void;
+  userId: string;
+  avatarUrl: string;
+}
+
+const ProfileSettings: React.FC<ProfileSettingsProps> = ({ open, onClose, userId, avatarUrl }) => {
+  if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
         <div className = "min-w-[600px] min-h-[400px] w-[600px] h-[650px] bg-background border border-border rounded-2xl">
@@ -24,7 +29,7 @@ const ProfileSettings: React.FC<{ open: boolean; onClose: () => void }> = ({ ope
                         <div className = "flex flex-col flex-grow">
                             <div className = "relative h-full items-start flex flex-col justify-center">
                                 <div className = "py-[2px] max-w-full">
-                                    <Heading>Edit profile</Heading>
+                                    <Text variant = "heading" color = "foreground">Edit profile</Text>
                                 </div>
                             </div>
                         </div>
@@ -45,9 +50,8 @@ const ProfileSettings: React.FC<{ open: boolean; onClose: () => void }> = ({ ope
                     </div>
                     {/* Info */}
                     <div className = "flex pt-3 px-4 mb-4 w-full items-start">
-                        <Avatar className = "border border-border">
-                            <AvatarImage src="https://pbs.twimg.com/profile_images/1880129627672219648/alLHN898_normal.jpg" />
-                        </Avatar>
+                        <ProfilePicture userId={userId} avatarUrl={avatarUrl} size="lg" />
+                    
                     </div>
                     
                 </div>

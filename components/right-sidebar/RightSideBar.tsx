@@ -3,21 +3,23 @@ import React from 'react'
 import { useEffect, useState } from "react";
 import { MdMoreHoriz } from 'react-icons/md'
 import { Container } from '@/components/right-sidebar'
-import { Heading, Subheading, Description } from '@/components/text'
-import { ProfilePictureSM, NameAndTag, FollowButton } from '@/components/profile'
+import Text from '@/components/text'
+import { ProfilePicture, NameAndTag, FollowButton } from '@/components/profile'
 import SearchBar from '@/components/ui/search-bar'
 import { createClient } from '@/lib/supabase/client'
+import { getProfileById } from '@/lib/supabase/queries/get-profile';
 const RightSideBar = () => {
     const [suggestedUsers, setSuggestedUsers] = useState<any[]>([]);
 
     useEffect(() => {
         const fetchUsers = async () => {
-            const supabase = createClient(); // <-- no await
-            const { data, error } = await supabase
-                .from("profiles")
-                .select("id, full_name, username, avatar_url")
-                .limit(5);
-            if (!error && data) setSuggestedUsers(data);
+            const response = await fetch('/api/suggested-users'); // Example endpoint
+            const userIds: string[] = await response.json();
+
+            const profiles = await Promise.all(
+                userIds.map(async (id) => await getProfileById(id))
+            );
+            setSuggestedUsers(profiles.filter(Boolean)); // Remove nulls
         };
         fetchUsers();
     }, []);
@@ -32,81 +34,81 @@ const RightSideBar = () => {
                         {/*What's happening */}
                         <Container>
                             <div className = "px-[16px] py-[12px] justify-center">
-                                <Heading>
+                                <Text variant = "heading" color = "foreground"> 
                                     What's happening?
-                                </Heading>
+                                </Text>
                             </div>
                             {/* Start Posts */}
                             <div className = "flex flex-col items-stretch px-[16px] py-[12px]">
                                 <div className = "flex flex-row justify-between">
-                                    <Description>Trending</Description>
+                                    <Text variant = "description" color = "muted">Trending</Text>
                                     <div className = "fill-muted">
                                         <div className = "text-muted text-[15px]/[20px] items-center font-normal justify-start min-w-0 wrap-break-word flex">
                                             <MdMoreHoriz className = "w-[1.25em align-text-bottom max-w-full h-[1.25em] inline-block"/>
                                         </div>
                                     </div>
                                 </div>
-                                <Subheading>
+                                <Text variant = "subheading" color = "foreground">
                                     TITLE
-                                </Subheading>
+                                </Text>
                                 <div className='mt-1'>
-                                    <Description>
+                                    <Text variant = "description" color = "muted">
                                         1,000 posts
-                                    </Description>
+                                    </Text>
                                 </div>
                             </div>
                             <div className = "flex flex-col items-stretch px-[16px] py-[12px]">
                                 <div className = "flex flex-row justify-between">
-                                    <Description>Trending</Description>
+                                    <Text variant = "description" color = "muted">Trending</Text>
                                     <div className = "fill-muted">
                                         <div className = "text-muted text-[15px]/[20px] items-center font-normal justify-start min-w-0 wrap-break-word flex">
                                             <MdMoreHoriz className = "w-[1.25em align-text-bottom max-w-full h-[1.25em] inline-block"/>
                                         </div>
                                     </div>
                                 </div>
-                                <Subheading>
+                                <Text variant = "subheading" color = "foreground">
                                     TITLE
-                                </Subheading>
+                                </Text>
                                 <div className='mt-1'>
-                                    <Description>
+                                    <Text variant = "description" color = "muted">
                                         1,000 posts
-                                    </Description>
+                                    </Text>
                                 </div>
                             </div>
                             <div className = "flex flex-col items-stretch px-[16px] py-[12px]">
                                 <div className = "flex flex-row justify-between">
-                                    <Description>Trending</Description>
+                                    <Text variant = "description" color = "muted">Trending</Text>
                                     <div className = "fill-muted">
                                         <div className = "text-muted text-[15px]/[20px] items-center font-normal justify-start min-w-0 wrap-break-word flex">
                                             <MdMoreHoriz className = "w-[1.25em align-text-bottom max-w-full h-[1.25em] inline-block"/>
                                         </div>
                                     </div>
                                 </div>
-                                <Subheading>
+                                <Text variant = "subheading" color = "foreground">
                                     TITLE
-                                </Subheading>
+                                </Text>
                                 <div className='mt-1'>
-                                    <Description>
+                                    <Text variant = "description" color = "muted">
                                         1,000 posts
-                                    </Description>
+                                    </Text>
                                 </div>
                             </div>
                             <div className = "flex flex-col items-stretch px-[16px] py-[12px]">
                                 <div className = "flex flex-row justify-between">
-                                    <Description>Trending</Description>
+                                    <Text variant = "description" color = "muted">Trending</Text>
                                     <div className = "fill-muted">
                                         <div className = "text-muted text-[15px]/[20px] items-center font-normal justify-start min-w-0 wrap-break-word flex">
                                             <MdMoreHoriz className = "w-[1.25em align-text-bottom max-w-full h-[1.25em] inline-block"/>
                                         </div>
                                     </div>
                                 </div>
-                                <Subheading>
+                                <Text variant = "subheading" color = "foreground">
                                     TITLE
-                                </Subheading>
+                                </Text>
                                 <div className='mt-1'>
-                                    <Description>
+                                    <Text variant = "description" color = "muted">
                                         1,000 posts
-                                    </Description>
+                                    </Text>
                                 </div>
                             </div>
                             {/* End Posts */}
@@ -115,9 +117,9 @@ const RightSideBar = () => {
                         <Container>
                             {/* Title */}
                             <div className = "px-[16px] py-[12px] justify-center">
-                                <Heading>
+                                <Text variant = "heading" color = "foreground"> 
                                     Who to Follow
-                                </Heading>
+                                </Text>
                             </div>
                             {/* Suggested Following List */}
                             <ul role='list'>
@@ -125,14 +127,14 @@ const RightSideBar = () => {
                                     <li key={user.id} role='listitem' className="py-[12px] px-[16px] cursor-pointer">
                                         <div className="flex flex-row flex-grow">
                                             <div className="mr-2">
-                                                <ProfilePictureSM userId={user.id} avatarUrl={user.avatar_url} />
+                                                <ProfilePicture userId={user.id} avatarUrl={user.avatar_url} size="sm" />
                                             </div>
                                             <div className="flex flex-row justify-between w-full">
                                                 <div className="flex flex-col">
                                                     <span className="font-bold">{user.full_name}</span>
                                                     <span className="text-muted">@{user.username}</span>
                                                 </div>
-                                                <FollowButton />
+                                                <FollowButton userId={user.id} />
                                             </div>
                                         </div>
                                     </li>
