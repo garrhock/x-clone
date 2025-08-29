@@ -7,13 +7,14 @@ import { cn } from "@/lib/utils";
 type ProfilePictureProps = {
   userId: string;
   avatarUrl: string;
-  size?: "sm" | "lg" | number; // "sm" = 40px, "lg" = 144px, or custom px
+  size?: "sm" | "lg" | "md"; // "sm" = 40px, "lg" = 144px, or custom px
   className?: string;
 };
 
 const sizeMap = {
   sm: "h-[40px] w-[40px]",
-  lg: "size-36", // 9rem = 144px
+  md: "h-[7rem] w-[7rem]",
+  lg: "h-[133.5px] w-[133.5px]",
 };
 
 export default function ProfilePicture({
@@ -24,23 +25,28 @@ export default function ProfilePicture({
 }: ProfilePictureProps) {
   const router = useRouter();
 
-  // Allow custom numeric size
-  const sizeClass =
-    typeof size === "number"
-      ? `h-[${size}px] w-[${size}px]`
-      : sizeMap[size] || sizeMap.sm;
-
-    const borderClass = size === "lg" ? "border-background border-4 rounded-full" : "";
-
+  const showBorder = size !== "sm";
 
   return (
-    <div className={cn("relative", sizeClass, className, borderClass)}>
-      <img
-        src={avatarUrl}
-        alt="User avatar"
-        className="w-full h-full rounded-full object-cover border-background cursor-pointer"
-        onClick={() => router.push(`/profile/${userId}`)}
-      />
+    <div className={cn(showBorder && "absolute border-4 border-background", "rounded-full")}>
+      <div
+        className={cn(
+          "relative flex items-center justify-center",
+          sizeMap[size],
+          className
+        )}
+      >
+        {showBorder && (
+          <div className="absolute inset-0 rounded-full border-4 border-black pointer-events-none" />
+        )}
+        <img
+          src={avatarUrl}
+          alt="User avatar"
+          className="w-full h-full rounded-full object-cover cursor-pointer"
+          onClick={() => router.push(`/profile/${userId}`)}
+          style={{ zIndex: 1, position: "relative" }}
+        />
+      </div>
     </div>
   );
 }

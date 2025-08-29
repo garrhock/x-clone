@@ -15,10 +15,16 @@ import {
 import UserTimeline from "@/components/profile/user-posts";
 import ProfileActionButton from "@/components/profile/profile-action-button"; // See below
 import { getProfileById } from "@/lib/supabase/queries/get-profile";
+import { countFollowers, countFollowing } from "@/lib/supabase/queries/follow";
+import Link from "next/dist/client/link";
+
 
 export default async function ProfilePage({ params }: { params: { userId: string } }) {
-  const userProfile = await getProfileById(params.userId);
-
+  const { userId } = await params; // <-- Await params here
+  
+  const userProfile = await getProfileById(userId);
+  const followersCount = await countFollowers(userId);
+  const followingCount = await countFollowing(userId);
   if (!userProfile) {
     return (
       <div className="w-full h-screen flex justify-center items-center bg-black text-white">
@@ -32,7 +38,7 @@ export default async function ProfilePage({ params }: { params: { userId: string
       <div className="w-full max-w-[1385px] mx-auto h-full flex relative">
         <LeftSideBar />
         <main className="w-full h-full flex flex-col items-start">
-          <div className="w-[1050px] items-stretch flex flex-col flex-grow flex-shrink ">
+          <div className="w-[1050px] items-stretch flex flex-col flex-grow flex-shrink overflow-y-auto">
             <div className="justify-between items-stretch flex flex-row flex-grow w-full ">
               <div className="max-w-[600px] flex flex-col border-l-[1px] border-r-[1px] border-border flex-grow w-full">
                 {/* Top Bar */}
@@ -40,11 +46,14 @@ export default async function ProfilePage({ params }: { params: { userId: string
                   <div className="flex flex-row items-center justify-between w-full px-4 h-[53px]">
                     {/* Back Button */}
                     <div className="flex flex-col min-w-[56px] min-h-[32px] align-stretch items-start justify-center ">
-                      <button className="rounded-full hover:bg-foreground/10 transition-colors duration-200 min-w-[36px] min-h-[36px]">
                         <div className="items-center flex flex-col">
-                          <IoArrowBackOutline className="size-5 align-middle" />
+                          <Link 
+                            href="/"
+                            className="rounded-full hover:bg-foreground/10 transition-colors duration-200 min-w-[36px] min-h-[36px] inline-flex items-center justify-center"
+                          >
+                            <IoArrowBackOutline className="size-5 align-middle" />
+                          </Link>
                         </div>
-                      </button>
                     </div>
                     {/* Name + num posts */}
                     <div className="flex flex-col flex-grow">
@@ -73,7 +82,7 @@ export default async function ProfilePage({ params }: { params: { userId: string
                   <div className="pt-3 px-4 mb-4">
                     {/* Avatar & Edit Profile/Follow */}
                     <div className="flex flex-row items-start justify-between flex-wrap">
-                      <div className="-translate-y-[60%]">
+                      <div className="mt-[-85px]">
                         <ProfilePicture userId={userProfile.id} avatarUrl={userProfile.avatar_url} size="lg" />
                       </div>
                       <div>
@@ -82,53 +91,57 @@ export default async function ProfilePage({ params }: { params: { userId: string
                       </div>
                     </div>
                     {/* Name & tag */}
-                    <div className="flex flex-col">
+                    <div className="flex flex-col my-6 mb-3">
                       <Text variant="heading">{userProfile.full_name}</Text>
                       <div className="text-muted text-[15px]/[20px] font-normal text-ellipsis wrap-break-word">
                         <span>@{userProfile.username}</span>
                       </div>
                     </div>
                     {/* Bio */}
-                    <Text variant="description" color="foreground">
+                    <Text variant="subheading" color="foreground" className="font-normal mb-3">
+                      Bio
                       {userProfile.bio}
                     </Text>
                     {/* Location & when Joined */}
-                    <div className="flex flex-row ">
-                      <div className="flex flex-row">
-                        <MdLocationOn />
-                        <Text variant="description" color="foreground">
+
+                    <div className="flex flex-row gap-3 mb-3">
+                      <div className="flex flex-row items-center gap-1">
+                        <MdLocationOn className="text-muted size-5" />
+                        <Text variant="subheading" color="muted" className="font-normal align-middle">
                           Texas
                         </Text>
                       </div>
-                      <div className="flex flex-row">
-                        <IoCalendarSharp />
-                        <Text variant="description" color="foreground">
+                      <div className="flex flex-row items-center gap-1">
+                        <IoCalendarSharp className="text-muted size-4" />
+                        <Text variant="subheading" color="muted" className="font-normal align-middle">
                           Joined January 2020
                         </Text>
                       </div>
                     </div>
+
                     {/* following & followers */}
-                    <div className="flex flex-row justify-start">
-                      <div className="flex flex-row">
-                        <Text variant="description" color="foreground">
-                          <span className="text-foreground font-bold">n</span>
+                    <div className="flex flex-row justify-start gap-3">
+                      <div className="flex flex-row items-center gap-1">
+                        <Text variant="subheading" color="white" className="font-normal align-middle">
+                          <span className="text-foreground font-bold">{followingCount}</span>
                         </Text>
-                        <Text variant="description" color="foreground">
+                        <Text variant="subheading" color="muted" className="font-normal align-middle">
                           Following
                         </Text>
                       </div>
-                      <div className="flex flex-row">
-                        <Text variant="description" color="foreground">
-                          <span className="text-foreground font-bold">n</span>
+                      <div className="flex flex-row items-center gap-1">
+                        <Text variant="subheading" color="white" className="font-normal align-middle">
+                          <span className="text-foreground font-bold">{followersCount}</span>
                         </Text>
-                        <Text variant="description" color="foreground">
+                        <Text variant="subheading" color="muted" className="font-normal align-middle">
                           Followers
                         </Text>
                       </div>
                     </div>
+
                   </div>
                   {/* Nav */}
-                  <Menubar className="border-b-[0.5px] border-border justify-between px-4">
+                  <Menubar className="border-b-[0.5px] border-border justify-between px-4 h-[53px]">
                     <MenubarMenu>
                       <MenubarTrigger>Posts</MenubarTrigger>
                     </MenubarMenu>
@@ -149,10 +162,10 @@ export default async function ProfilePage({ params }: { params: { userId: string
                     </MenubarMenu>
                   </Menubar>
                   {/* Posts */}
-                  <UserTimeline userId={params.userId} />
+                  <UserTimeline userId={userId} />
                   <div className="px-[16px] py-[12px] justify-center">
-                    <Text variant="heading" color="muted">
-                      Who to Follow
+                    <Text variant="heading" color="white">
+                      Who to follow
                     </Text>
                   </div>
                 </div>

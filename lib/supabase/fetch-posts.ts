@@ -1,14 +1,19 @@
-import { createClient } from "./server";
+import { createClient } from "@/lib/supabase/client";
 import type { Post } from "@/lib/supabase/types";
 
 export async function fetchPosts(): Promise<Post[]> {
-  const supabase = await createClient();
+  const supabase = createClient();
+
   const { data, error } = await supabase
     .from("posts")
     .select(`
-      id, text, created_at, file_urls,
-      likes, comments, reposts, views, bookmarks,
-      profiles:user_id (
+      id,
+      text,
+      user_id,
+      created_at,
+      updated_at,
+      file_urls,
+      profiles!posts_user_id_fkey (
         id,
         username,
         full_name,
@@ -18,23 +23,28 @@ export async function fetchPosts(): Promise<Post[]> {
     .order("created_at", { ascending: false });
 
   if (error) throw error;
+
   return (
-    data?.map(post => ({
+    (data || []).map((post: any) => ({
       ...post,
-      profiles: Array.isArray(post.profiles) ? post.profiles[0] : post.profiles
-    })) || []
+      // Normalize embedded profile to a single object (handle array/object)
+      profiles: Array.isArray(post.profiles) ? post.profiles[0] : post.profiles,
+    })) as Post[]
   );
 }
 
-export async function fetchPostsByUser(userId: string) {
-  const supabase = await createClient();
+export async function fetchPostsByUser(userId: string): Promise<Post[]> {
+  const supabase = createClient();
 
   const { data, error } = await supabase
     .from("posts")
     .select(`
-      id, text, created_at, file_urls,
-      likes, comments, reposts, views, bookmarks,
-      profiles:user_id (
+      id,
+      text,
+      created_at,
+      updated_at,
+      file_urls,
+      profiles!posts_user_id_fkey (
         id,
         username,
         full_name,
@@ -45,10 +55,11 @@ export async function fetchPostsByUser(userId: string) {
     .order("created_at", { ascending: false });
 
   if (error) throw error;
+
   return (
-    data?.map(post => ({
+    (data || []).map((post: any) => ({
       ...post,
-      profiles: Array.isArray(post.profiles) ? post.profiles[0] : post.profiles
-    })) || []
+      profiles: Array.isArray(post.profiles) ? post.profiles[0] : post.profiles,
+    })) as Post[]
   );
 }

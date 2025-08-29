@@ -5,12 +5,12 @@ import { IoBookmarkOutline, IoShareOutline, IoStatsChart } from "react-icons/io5
 import { MdMoreHoriz } from "react-icons/md";
 import { ProfilePicture } from "../profile";
 import type { Post, Profile } from "@/lib/supabase/types";
+import { getPostStats } from "@/lib/supabase/queries/post-stats";
 
 function timeSince(dateString: string) {
   const now = new Date();
   const date = new Date(dateString);
   const seconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-
   const intervals = [
     { label: "yr", seconds: 31536000 },
     { label: "w", seconds: 604800 },
@@ -37,13 +37,16 @@ export default async function Timeline() {
     );
   }
 
+  // Fetch stats for all posts in parallel
+  const statsArray = await Promise.all(posts.map(post => getPostStats(post.id)));
+
   return (
-    <div className="">
+    <div>
       <section className="flex flex-col items-stretch">
         <div className="relative min-h-screen">
-          {posts.map((post) => {
-            // userProfile is always a Profile object due to types
+          {posts.map((post, idx) => {
             const userProfile: Profile = post.profiles;
+            const stats = statsArray[idx];
 
             return (
               <div key={post.id} className="border-b-[1px] block border-border">
@@ -152,7 +155,7 @@ export default async function Timeline() {
                                   <BsChat className="w-[1.25em] max-w-full align-text-bottom fill-muted relative h-[1.25em] inline-block" />
                                   {/* Amt. */}
                                   <div className="min-w-[calc(1em+24px)] wrap-break-word text-[13px]/[16px] px-[4px]">
-                                    <span className="min-w-0 wrap-break-word">{post.comments}</span>
+                                    <span className="min-w-0 wrap-break-word">{stats.comments}</span>
                                   </div>
                                 </div>
                               </button>
@@ -164,7 +167,7 @@ export default async function Timeline() {
                                   <AiOutlineRetweet className="w-[1.25em] max-w-full align-text-bottom fill-muted relative h-[1.25em] inline-block" />
                                   {/* Amt. */}
                                   <div className="min-w-[calc(1em+24px)] wrap-break-word text-[13px]/[16px] px-[4px]">
-                                    <span className="min-w-0 wrap-break-word">{post.reposts}</span>
+                                    <span className="min-w-0 wrap-break-word">{stats.reposts}</span>
                                   </div>
                                 </div>
                               </button>
@@ -176,7 +179,7 @@ export default async function Timeline() {
                                   <AiOutlineHeart className="w-[1.25em] max-w-full align-text-bottom fill-muted relative h-[1.25em] inline-block" />
                                   {/* Amt. */}
                                   <div className="min-w-[calc(1em+24px)] wrap-break-word text-[13px]/[16px] px-[4px]">
-                                    <span className="min-w-0 wrap-break-word">{post.likes}</span>
+                                    <span className="min-w-0 wrap-break-word">{stats.likes}</span>
                                   </div>
                                 </div>
                               </button>
@@ -188,7 +191,7 @@ export default async function Timeline() {
                                   <IoStatsChart className="w-[1.25em] max-w-full align-text-bottom fill-muted relative h-[1.25em] inline-block" />
                                   {/* Amt. */}
                                   <div className="min-w-[calc(1em+24px)] wrap-break-word text-[13px]/[16px] px-[4px]">
-                                    <span className="min-w-0 wrap-break-word">{post.views}</span>
+                                    <span className="min-w-0 wrap-break-word">{stats.views}</span>
                                   </div>
                                 </div>
                               </button>

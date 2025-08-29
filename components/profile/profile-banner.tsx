@@ -1,33 +1,67 @@
 'use client';
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import { getProfileById } from "@/lib/supabase/queries/get-profile";
+
+import React, { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { cn } from "@/lib/utils";
+
+const supabase = createClient();
+
 type BannerProps = {
-  userId: string;
-  size?: "full" | "compact";
+  userId: string; // The ID of the user whose banner we want to display
+  size?: "full" | "compact"; // "full" = full height, "compact" = smaller height
+  className?: string; // Optional additional CSS classes
 };
 
-export default function Banner({ userId, size = "full" }: BannerProps) {
-  const [src, setSrc] = useState<string | null>(null);
-  const height = size === "compact" ? "h-[100px]" : "h-[200px]";
+const sizeMap = {
+  full: "h-[193.66px]",
+  compact: "h-[100px]",
+};
+
+export default function Banner({ userId, size = "full", className = "" }: BannerProps) {
+  const [bannerUrl, setBannerUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchBanner = async () => {
-      const profile = await getProfileById(userId);
-      if (profile) setSrc(profile.banner_url);
+    const fetchBannerUrl = async () => {
+      try {
+        // Fetch the user's profile to get the banner URL
+        const { data, error } = await supabase
+          .from("profiles")
+          .select("banner_url")
+          .eq("id", userId)
+          .single();
+
+        if (error) {
+          console.error("Error fetching banner URL:", error.message);
+          return;
+        }
+
+        setBannerUrl(data?.banner_url || null);
+      } catch (error) {
+        console.error("Unexpected error fetching banner URL:", error);
+      }
     };
-    if (userId) fetchBanner();
+
+    fetchBannerUrl();
   }, [userId]);
 
   return (
-    <div className={`w-full ${height} bg-muted relative`}>
-      {src && (
-        <Image
-          src={src}
+    <div
+      className={cn(
+        "relative w-full bg-muted",
+        sizeMap[size],
+        className
+      )}
+    >
+      {bannerUrl ? (
+        <img
+          src={bannerUrl}
           alt="Banner"
-          fill
-          className="object-cover"
+          className="w-full h-full object-cover"
         />
+      ) : (
+        <div className="w-full h-full bg-gray-300 flex items-center justify-center text-gray-500">
+          No Banner
+        </div>
       )}
     </div>
   );
