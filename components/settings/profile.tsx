@@ -15,7 +15,12 @@ interface ProfileSettingsProps {
   avatarUrl: string;
 }
 
-const ProfileSettings: React.FC<ProfileSettingsProps> = ({ open, onClose, userId, avatarUrl }) => {
+const ProfileSettings: React.FC<ProfileSettingsProps> = ({
+  open,
+  onClose,
+  userId,
+  avatarUrl,
+}) => {
   const router = useRouter();
 
   const [fullName, setFullName] = useState("");
@@ -24,6 +29,13 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ open, onClose, userId
   const [personalWebsiteLink, setPersonalWebsiteLink] = useState("");
   const [bannerUrl, setBannerUrl] = useState<string>("");
   const [avatarUrlState, setAvatarUrl] = useState<string>(avatarUrl || "");
+
+  // pending uploads (local preview until save)
+  const [pendingBanner, setPendingBanner] = useState<File | null>(null);
+  const [pendingBannerPreview, setPendingBannerPreview] = useState<string>("");
+
+  const [pendingAvatar, setPendingAvatar] = useState<File | null>(null);
+  const [pendingAvatarPreview, setPendingAvatarPreview] = useState<string>("");
 
   useEffect(() => {
     if (!open) return;
@@ -47,7 +59,6 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ open, onClose, userId
     fetchProfile();
   }, [open, userId]);
 
-  // Update avatarUrlState if the avatarUrl prop changes
   useEffect(() => {
     setAvatarUrl(avatarUrl || "");
   }, [avatarUrl]);
@@ -59,80 +70,86 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ open, onClose, userId
 
   const handleSave = async () => {
     const supabase = createClient();
+    let newBannerUrl = bannerUrl;
+    let newAvatarUrl = avatarUrlState;
 
-    const { error } = await supabase
+    // Upload banner if a new one was selected
+    if (pendingBanner) {
+      const fileName = `${userId}/banner-${Date.now()}-${pendingBanner.name}`;
+      const { data, error } = await supabase.storage
+        .from("profile-banner")
+        .upload(fileName, pendingBanner, { cacheControl: "3600", upsert: true });
+
+      if (error) {
+        console.error("Error uploading banner:", error.message);
+      } else if (data) {
+        const { data: publicUrlData } = supabase.storage
+          .from("profile-banner")
+          .getPublicUrl(data.path);
+        newBannerUrl = publicUrlData.publicUrl;
+      }
+    }
+
+    // Upload avatar if a new one was selected
+    if (pendingAvatar) {
+      const fileName = `${userId}/profile-${Date.now()}-${pendingAvatar.name}`;
+      const { data, error } = await supabase.storage
+        .from("profile-picture")
+        .upload(fileName, pendingAvatar, { cacheControl: "3600", upsert: true });
+
+      if (error) {
+        console.error("Error uploading avatar:", error.message);
+      } else if (data) {
+        const { data: publicUrlData } = supabase.storage
+          .from("profile-picture")
+          .getPublicUrl(data.path);
+        newAvatarUrl = publicUrlData.publicUrl;
+      }
+    }
+
+    // Update profile row with new URLs (and other fields)
+    const { error: updateError } = await supabase
       .from("profiles")
       .update({
         full_name: fullName,
         bio,
         location,
         personal_website_link: personalWebsiteLink,
+        banner_url: newBannerUrl,
+        avatar_url: newAvatarUrl,
       })
       .eq("id", userId);
 
-    if (!error) {
+    if (updateError) {
+      console.error("Error updating profile:", updateError.message);
+      alert("Failed to update profile.");
+    } else {
       alert("Profile updated successfully!");
+      setBannerUrl(newBannerUrl);
+      setAvatarUrl(newAvatarUrl);
+      setPendingBanner(null);
+      setPendingAvatar(null);
+      setPendingBannerPreview("");
+      setPendingAvatarPreview("");
       onClose();
       router.push(`/profile/${userId}`);
-    } else {
-      alert("Failed to update profile.");
     }
   };
 
-  const handleBannerChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const supabase = createClient();
+  const handleBannerChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    const fileName = `${userId}/banner-${Date.now()}-${file.name}`;
-    const { error } = await supabase.storage
-      .from("banners")
-      .upload(fileName, file, { cacheControl: "3600", upsert: true });
-
-    if (error) {
-      console.error("Error uploading banner:", error);
-      alert("Failed to upload banner.");
-      return;
-    }
-
-    const { data: publicUrlData } = supabase.storage.from("banners").getPublicUrl(fileName);
-    if (publicUrlData?.publicUrl) {
-      await supabase
-        .from("profiles")
-        .update({ banner_url: publicUrlData.publicUrl })
-        .eq("id", userId);
-
-      setBannerUrl(publicUrlData.publicUrl);
-      alert("Banner updated successfully!");
-    }
+    setPendingBanner(file);
+    setPendingBannerPreview(URL.createObjectURL(file));
   };
 
-  const handleProfilePictureChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const supabase = createClient();
+  const handleProfilePictureChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
-    const fileName = `${userId}/profile-${Date.now()}-${file.name}`;
-    const { error } = await supabase.storage
-      .from("avatars")
-      .upload(fileName, file, { cacheControl: "3600", upsert: true });
-
-    if (error) {
-      console.error("Error uploading profile picture:", error);
-      alert("Failed to upload profile picture.");
-      return;
-    }
-
-    const { data: publicUrlData } = supabase.storage.from("avatars").getPublicUrl(fileName);
-    if (publicUrlData?.publicUrl) {
-      await supabase
-        .from("profiles")
-        .update({ avatar_url: publicUrlData.publicUrl })
-        .eq("id", userId);
-
-      setAvatarUrl(publicUrlData.publicUrl);
-      alert("Profile picture updated successfully!");
-    }
+    setPendingAvatar(file);
+    setPendingAvatarPreview(URL.createObjectURL(file));
   };
 
   if (!open) return null;
@@ -142,7 +159,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ open, onClose, userId
       <div className="min-w-[600px] min-h-[400px] w-[600px] h-[650px] bg-background border border-border rounded-2xl overflow-y-auto">
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="sticky top-0 z-2">
+          <div className="sticky top-0">
             <div className="flex flex-row items-center justify-between h-[53px] px-4">
               <button
                 className="rounded-full hover:bg-foreground/10 transition-colors duration-200 min-w-[36px] min-h-[36px] flex items-center justify-center"
@@ -162,14 +179,24 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ open, onClose, userId
               </button>
             </div>
           </div>
+
           {/* Content */}
           <div className="flex flex-col pb-16">
             {/* Banner */}
             <div className="relative">
-              <Banner userId={userId} />
+              {pendingBannerPreview ? (
+                <img
+                  src={pendingBannerPreview}
+                  alt="Banner preview"
+                  className="w-full h-48 object-cover rounded-t-2xl"
+                />
+              ) : (
+                <Banner userId={userId} />
+              )}
               <label
                 htmlFor="banner-upload"
-                className="absolute top-4 right-4 bg-gray-500 hover:bg-gray-600 text-white rounded-full p-2 flex items-center justify-center cursor-pointer"
+                className="absolute inset-0 flex items-center justify-center bg-background/10 hover:bg-background/50 text-white rounded-full cursor-pointer"
+                style={{ width: "48px", height: "48px", margin: "auto" }}
               >
                 <RiCameraAiLine className="w-6 h-6" />
               </label>
@@ -181,13 +208,13 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ open, onClose, userId
                 onChange={handleBannerChange}
               />
             </div>
-            {/* Info */}
+
+            {/* Avatar */}
             <div className="sticky flex pt-3 px-4 mb-4 w-full items-start pb-[60px]">
-              <div className="mt-[-55px] z-10 relative">
-                <ProfilePicture userId={userId} avatarUrl={avatarUrlState} size="md" />
+              <div className="mt-[-55px] relative">
                 <label
                   htmlFor="profile-picture-upload"
-                  className="absolute top-[60px] left-10 bg-gray-500 hover:bg-gray-600 text-white rounded-full p-2 flex items-center justify-center cursor-pointer"
+                  className="absolute top-[60px] left-10 bg-background/10 hover:bg-background/50 text-white rounded-full p-2 flex items-center justify-center cursor-pointer z-30"
                   style={{ transform: "translateY(-50%)" }}
                 >
                   <RiCameraAiLine className="w-6 h-6" />
@@ -199,8 +226,15 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ open, onClose, userId
                   className="hidden"
                   onChange={handleProfilePictureChange}
                 />
+                <ProfilePicture
+                  userId={userId}
+                  avatarUrl={pendingAvatarPreview || avatarUrlState}
+                  size="md"
+                />
               </div>
             </div>
+
+            {/* Fields */}
             <div className="mx-4 flex flex-col">
               <input
                 type="text"

@@ -16,6 +16,7 @@ import UserTimeline from "@/components/profile/user-posts";
 import ProfileActionButton from "@/components/profile/profile-action-button"; // See below
 import { getProfileById } from "@/lib/supabase/queries/get-profile";
 import { countFollowers, countFollowing } from "@/lib/supabase/queries/follow";
+import { countPosts } from "@/lib/supabase/queries/count-posts";
 import Link from "next/dist/client/link";
 
 
@@ -25,6 +26,7 @@ export default async function ProfilePage({ params }: { params: { userId: string
   const userProfile = await getProfileById(userId);
   const followersCount = await countFollowers(userId);
   const followingCount = await countFollowing(userId);
+  const postsCount = await countPosts(userId);
   if (!userProfile) {
     return (
       <div className="w-full h-screen flex justify-center items-center bg-black text-white">
@@ -62,7 +64,9 @@ export default async function ProfilePage({ params }: { params: { userId: string
                           <Text variant="heading">{userProfile.full_name}</Text>
                         </div>
                       </div>
-                      <Text variant="description" color="muted"> 0 posts </Text>
+                        <Text variant="description" color="muted">
+                        {postsCount} posts {/* Display the post count */}
+                      </Text>
                     </div>
                     {/* Search */}
                     <div className="flex flex-col min-w-[56px] min-h-[32px] align-stretch items-end justify-center ">
@@ -105,12 +109,14 @@ export default async function ProfilePage({ params }: { params: { userId: string
                     {/* Location & when Joined */}
 
                     <div className="flex flex-row gap-3 mb-3">
-                      <div className="flex flex-row items-center gap-1">
-                        <MdLocationOn className="text-muted size-5" />
-                        <Text variant="subheading" color="muted" className="font-normal align-middle">
-                          Texas
-                        </Text>
-                      </div>
+                      {userProfile.location && (
+                        <div className="flex flex-row items-center gap-1">
+                          <MdLocationOn className="text-muted size-5" />
+                          <Text variant="subheading" color="muted" className="font-normal align-middle">
+                            {userProfile.location}
+                          </Text>
+                        </div>
+                      )}
                       <div className="flex flex-row items-center gap-1">
                         <IoCalendarSharp className="text-muted size-4" />
                         <Text variant="subheading" color="muted" className="font-normal align-middle">
@@ -163,11 +169,7 @@ export default async function ProfilePage({ params }: { params: { userId: string
                   </Menubar>
                   {/* Posts */}
                   <UserTimeline userId={userId} />
-                  <div className="px-[16px] py-[12px] justify-center">
-                    <Text variant="heading" color="white">
-                      Who to follow
-                    </Text>
-                  </div>
+                  
                 </div>
               </div>
               <RightSideBar />
