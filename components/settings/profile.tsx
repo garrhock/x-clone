@@ -4,9 +4,9 @@ import { useRouter } from "next/navigation";
 import { IoCloseOutline } from "react-icons/io5";
 import { RiCameraAiLine } from "react-icons/ri";
 import Text from "@/components/text";
-import ProfilePicture from "@/components/profile/avatar";
-import Banner from "../profile/profile-banner";
-import { getProfileById } from "@/lib/supabase/queries/get-profile";
+import ProfilePicture from "@/components/ui/avatar";
+import Banner from "../ui/profile-banner";
+import { getProfileById} from "@/lib/supabase/queries";
 
 interface ProfileSettingsProps {
   open: boolean;
@@ -65,7 +65,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({
 
   const handleClose = () => {
     onClose();
-    router.push(`/profile/${userId}`);
+    router.push(`/profile-page/${userId}`);
   };
 
   const handleSave = async () => {
@@ -132,7 +132,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({
       setPendingBannerPreview("");
       setPendingAvatarPreview("");
       onClose();
-      router.push(`/profile/${userId}`);
+      router.push(`/profile-page/${userId}`);
     }
   };
 

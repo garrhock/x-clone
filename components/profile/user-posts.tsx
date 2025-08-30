@@ -4,8 +4,8 @@ import { AiOutlineHeart, AiOutlineRetweet } from "react-icons/ai";
 import { BsChat } from "react-icons/bs";
 import { IoBookmarkOutline, IoShareOutline, IoStatsChart } from "react-icons/io5";
 import { MdMoreHoriz } from "react-icons/md";
-import ProfilePictureSM from "./avatar";
-import { getPostStats } from "@/lib/supabase/queries/post-stats";
+import ProfilePictureSM from "../ui/avatar";
+import { getPostStats } from "@/lib/supabase/queries";
 
 function timeSince(dateString: string) {
   const now = new Date();

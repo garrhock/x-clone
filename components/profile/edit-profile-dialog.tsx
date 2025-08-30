@@ -1,8 +1,8 @@
 'use client'
 import { useState, useEffect} from "react";
-import EditProfileButton from "@/components/profile/edit-profile-button";
+import EditProfileButton from "@/components/ui/edit-profile-button";
 import ProfileSettings from "@/components/settings/profile";
-import {getProfileById} from "@/lib/supabase/queries/get-profile";
+import { getProfileById } from "@/lib/supabase/queries";
 
 export default function EditProfileDialog({ userId }: { userId: string }) {
   const [open, setOpen] = useState(false);

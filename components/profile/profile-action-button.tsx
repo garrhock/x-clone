@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import EditProfileDialog from "@/components/profile/edit-profile-dialog";
-import FollowButton from "@/components/profile/follow-button";
+import FollowButton from "@/components/ui/follow-button";
 
 export default function ProfileActionButton({ profileId }: { profileId: string }) {
   const [userId, setUserId] = useState<string | null>(null);

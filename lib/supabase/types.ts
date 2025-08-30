@@ -18,3 +18,12 @@ export type Post = {
   profiles: Profile;
   bookmarks: number;
 };
+
+export interface Comment {
+  id: string; // UUID of the comment
+  created_at: string; // Timestamp when the comment was created
+  post_id: string; // UUID of the post the comment belongs to
+  user_id: string; // UUID of the user who made the comment
+  content: string; // The content of the comment
+  profiles: Profile; // The profile of the user who made the comment (joined from the profiles table)
+}

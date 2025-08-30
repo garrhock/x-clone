@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react'
 import { post } from './actions'
 import { createClient } from '@/lib/supabase/client'
 import PostToolBar from '@/components/posts/post-toolbar';
-import ProfilePicture from '../profile/avatar';
-import { getProfileById } from '@/lib/supabase/queries/get-profile';
+import ProfilePicture from '../ui/avatar';
+import { getProfileById } from '@/lib/supabase/queries';
 
 export default function PostForm() {
   const [content, setContent] = useState('')

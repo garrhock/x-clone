@@ -2,12 +2,11 @@
 import React from 'react'
 import { useEffect, useState } from "react";
 import { MdMoreHoriz } from 'react-icons/md'
-import { Container } from '@/components/right-sidebar'
+import Container from './container';
 import Text from '@/components/text'
 import { ProfilePicture, NameAndTag, FollowButton } from '@/components/profile'
 import SearchBar from '@/components/ui/search-bar'
-import { createClient } from '@/lib/supabase/client'
-import { getProfileById } from '@/lib/supabase/queries/get-profile';
+import { getProfileById } from '@/lib/supabase/queries';
 const RightSideBar = () => {
     const [suggestedUsers, setSuggestedUsers] = useState<any[]>([]);
 

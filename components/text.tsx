@@ -1,6 +1,6 @@
 import React from "react";
 
-type Variant = "heading" | "subheading" | "description";
+type Variant = "heading" | "subheading" | "description" | "post";
 type Color = "foreground" | "muted" | "primary" | "secondary" | "danger" | "success" | string;
 
 interface TextProps {
@@ -14,6 +14,7 @@ const variantClasses: Record<Variant, string> = {
   heading: "text-[20px]/[24px] font-bold",
   subheading: "mt-[2px] text-[15px]/[20px] font-bold",
   description: "text-[13px]/[16px] font-normal",
+  post: "text-[17px]/[24px] font-normal",
 };
 
 const colorClasses: Record<Color, string> = {

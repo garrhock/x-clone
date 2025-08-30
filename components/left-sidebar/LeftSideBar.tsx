@@ -13,7 +13,7 @@ import {
   SidebarMenu,
 } from "@/components/ui/sidebar";
 import Text from "@/components/text";
-import { getProfileById } from "@/lib/supabase/queries/get-profile";
+import { getProfileById } from "@/lib/supabase/queries";
 
 const NAVIGATION_ITEMS = [
   { title: "Home", icon: GoHomeFill, href: "/" },
@@ -68,7 +68,7 @@ const LeftSideBar = () => {
                 {/* User Profile Link */}
                 {user && (
                   <div className = "flex self-stretch py-1">
-                    <Link href={`/profile/${user.id}`}>
+                    <Link href={`/profile-page/${user.id}`}>
                       <div className = "flex flex-row p-3">
                         <BiUser className=" !w-[26.25px] !h-[26.25px] "/>
                         <div className="flex items-center ml-5 mr-4">
@@ -85,7 +85,7 @@ const LeftSideBar = () => {
             </button>
           </div>
           {user && (
-              <Link href={`/profile/${user.id}`}>
+              <Link href={`/profile-page/${user.id}`}>
                 <button className="p-[12px] rounded-full flex flex-row items-center cursor-pointer outline-none w-full my-3">
                   <div className="w-[40px] h-[40px] rounded-full overflow-hidden flex-shrink-0">
                     <img

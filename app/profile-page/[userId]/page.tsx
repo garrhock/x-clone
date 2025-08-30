@@ -3,8 +3,8 @@ import RightSideBar from "@/components/right-sidebar/RightSideBar";
 import { IoArrowBackOutline } from "react-icons/io5";
 import { GoSearch } from "react-icons/go";
 import Text from "@/components/text";
-import ProfilePicture from "@/components/profile/avatar";
-import Banner from "@/components/profile/profile-banner";
+import ProfilePicture from "@/components/ui/avatar";
+import Banner from "@/components/ui/profile-banner";
 import { IoCalendarSharp } from "react-icons/io5";
 import { MdLocationOn } from "react-icons/md";
 import {
@@ -14,9 +14,7 @@ import {
 } from "@/components/ui/menubar";
 import UserTimeline from "@/components/profile/user-posts";
 import ProfileActionButton from "@/components/profile/profile-action-button"; // See below
-import { getProfileById } from "@/lib/supabase/queries/get-profile";
-import { countFollowers, countFollowing } from "@/lib/supabase/queries/follow";
-import { countPosts } from "@/lib/supabase/queries/count-posts";
+import { getProfileById, countFollowers, countFollowing, countPosts } from "@/lib/supabase/queries";
 import Link from "next/dist/client/link";
 
 

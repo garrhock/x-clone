@@ -1,11 +1,12 @@
 import { fetchPosts } from "@/lib/supabase/fetch-posts";
+import Link from "next/link"; // Import Link for navigation
 import { AiOutlineHeart, AiOutlineRetweet } from "react-icons/ai";
 import { BsChat } from "react-icons/bs";
 import { IoBookmarkOutline, IoShareOutline, IoStatsChart } from "react-icons/io5";
 import { MdMoreHoriz } from "react-icons/md";
 import { ProfilePicture } from "../profile";
 import type { Post, Profile } from "@/lib/supabase/types";
-import { getPostStats } from "@/lib/supabase/queries/post-stats";
+import { getPostStats } from "@/lib/supabase/queries";
 
 function timeSince(dateString: string) {
   const now = new Date();
@@ -43,183 +44,190 @@ export default async function Timeline() {
   return (
     <div>
       <section className="flex flex-col items-stretch">
-        <div className="relative min-h-screen">
+        <div className="relative min-h-screen ">
           {posts.map((post, idx) => {
             const userProfile: Profile = post.profiles;
             const stats = statsArray[idx];
 
             return (
-              <div key={post.id} className="border-b-[1px] block border-border">
-                <div className="flex flex-col items-stretch">
-                  <article className="px-[16px] flex flex-row w-full cursor-pointer overflow-hidden">
-                    <div className="flex flex-col flex-shrink flex-grow">
-                      <div className="flex flex-col items-stretch ">
-                        <div className="flex flex-row">
-                          <div className="pt-[12px] basis-0 flex-grow"></div>
+              <Link
+                key={post.id}
+                href={`/post-page/${post.id}`} // Correct path to the post page
+                className="block hover:bg-background/80 transition-colors duration-200"
+              > 
+                <div key={post.id} className="border-b-[1px] block border-border hover:bg-foreground/5 transition-colors duration-200">
+                  <div className="flex flex-col items-stretch ">
+                    <article className="px-[16px] flex flex-row w-full cursor-pointer overflow-hidden">
+                      <div className="flex flex-col flex-shrink flex-grow">
+                        <div className="flex flex-col items-stretch ">
+                          <div className="flex flex-row">
+                            <div className="pt-[12px] basis-0 flex-grow"></div>
+                          </div>
                         </div>
-                      </div>
-                      <div className="flex flex-row items-stretch">
-                        {/* Profile Picture */}
-                        <div className="basis-[40px] flex-grow-0 items-center mr-[8px]">
-                          <ProfilePicture
-                            userId={userProfile?.id || ""}
-                            avatarUrl={userProfile?.avatar_url || ""}
-                            size="sm"
-                          />
-                        </div>
-                        {/* Post Content */}
-                        <div className="pb-[12px] basis-0 justify-center flex-grow flex flex-col">
-                          {/* User Info */}
-                          <div className="mb-[2px]">
-                            <div className="items-start justify-between flex flex-row">
-                              {/* Main Profile Info */}
-                              <div className="items-baseline shrink-1 flex flex-row">
-                                <div className="max-w-full shrink-1 outline-none">
-                                  <div className="max-w-full items-center flex flex-row">
-                                    {/* Name */}
-                                    <a href={`/profile/${userProfile.id}`}>
-                                      <div className="text-[15px]/[20px] font-bold min-w-0 items-center text-white wrap-break-word overflow-hidden">
-                                        <span className="min-w-0 overflow-ellipsis">
-                                          <span className="min-w-0">
-                                            {userProfile?.full_name || "Unknown"}
+                        <div className="flex flex-row items-stretch">
+                          {/* Profile Picture */}
+                          <div className="basis-[40px] flex-grow-0 items-center mr-[8px]">
+                            <ProfilePicture
+                              userId={userProfile?.id || ""}
+                              avatarUrl={userProfile?.avatar_url || ""}
+                              size="sm"
+                            />
+                          </div>
+                          {/* Post Content */}
+                          <div className="pb-[12px] basis-0 justify-center flex-grow flex flex-col ">
+                            {/* User Info */}
+                            <div className="mb-[2px]">
+                              <div className="items-start justify-between flex flex-row">
+                                {/* Main Profile Info */}
+                                <div className="items-baseline shrink-1 flex flex-row">
+                                  <div className="max-w-full shrink-1 outline-none">
+                                    <div className="max-w-full items-center flex flex-row">
+                                      {/* Name */}
+                                      <Link href={`/profile-page/${userProfile.id}`}>
+                                        <div className="text-[15px]/[20px] font-bold min-w-0 items-center text-white wrap-break-word overflow-hidden">
+                                          <span className="min-w-0 overflow-ellipsis">
+                                            <span className="min-w-0">
+                                              {userProfile?.full_name || "Unknown"}
+                                            </span>
                                           </span>
-                                        </span>
-                                      </div>
-                                    </a>
-                                    {/* Username */}
-                                    <div className="ml-[4px] flex flex-row shrink-1">
-                                      <div className="items-baseline flex flex-row">
-                                        {/* @ */}
-                                        <div className="max-w-full">
-                                          <a href={`/profile/${userProfile.id}`} className="cursor-pointer">
-                                            <div className="text-muted text-[15px]/[20px] font-normal min-w-0 items-center wrap-break-word overflow-hidden">
-                                              <span className="wrap-break-word min-w-0">
-                                                @{userProfile?.username || "unknown"}
-                                              </span>
-                                            </div>
-                                          </a>
                                         </div>
-                                        {/* - */}
-                                        <div className="text-muted text-[15px]/[20px] font-normal px-[4px] min-w-0 items-center wrap-break-word overflow-hidden">
-                                          <span className="min-w-0 wrap-break-word ">·</span>
-                                        </div>
-                                        {/* time */}
-                                        <div className="shrink-0 flex flex-row">
-                                          <a href="#" className="gap-[4px] flex-wrap text-muted shrink-0 text-[15px]/[20px] wrap-break-word min-w-0 cursor-pointer font-normal inline-flex">
-                                            <time dateTime={post.created_at}>
-                                              {timeSince(post.created_at)}
-                                            </time>
-                                          </a>
+                                      </Link>
+                                      {/* Username */}
+                                      <div className="ml-[4px] flex flex-row shrink-1">
+                                        <div className="items-baseline flex flex-row">
+                                          {/* @ */}
+                                          <div className="max-w-full">
+                                            <a href={`/profile-page/${userProfile.id}`} className="cursor-pointer">
+                                              <div className="text-muted text-[15px]/[20px] font-normal min-w-0 items-center wrap-break-word overflow-hidden">
+                                                <span className="wrap-break-word min-w-0">
+                                                  @{userProfile?.username || "unknown"}
+                                                </span>
+                                              </div>
+                                            </a>
+                                          </div>
+                                          {/* - */}
+                                          <div className="text-muted text-[15px]/[20px] font-normal px-[4px] min-w-0 items-center wrap-break-word overflow-hidden">
+                                            <span className="min-w-0 wrap-break-word ">·</span>
+                                          </div>
+                                          {/* time */}
+                                          <div className="shrink-0 flex flex-row">
+                                            <a href="#" className="gap-[4px] flex-wrap text-muted shrink-0 text-[15px]/[20px] wrap-break-word min-w-0 cursor-pointer font-normal inline-flex">
+                                              <time dateTime={post.created_at}>
+                                                {timeSince(post.created_at)}
+                                              </time>
+                                            </a>
+                                          </div>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
-                              </div>
-                              {/* More */}
-                              <div className="ml-[8px]">
-                                <div className="gap-[8px] justify-between items-center flex flex-row">
-                                  <div className="items-center flex flex-row justify-start">
-                                    <button className="cursor-pointer min-h-[20px] justify-center overflow-visible items-stretch">
-                                      <div className="text-muted text-[15px]/[20px] items-center font-normal justify-start min-w-0 wrap-break-word flex">
-                                        <MdMoreHoriz className="w-[1.25em] fill-muted align-text-bottom max-w-full h-[1.25em] inline-block" />
-                                      </div>
-                                    </button>
+                                {/* More */}
+                                <div className="ml-[8px]">
+                                  <div className="gap-[8px] justify-between items-center flex flex-row">
+                                    <div className="items-center flex flex-row justify-start">
+                                      <button className="cursor-pointer min-h-[20px] justify-center overflow-visible items-stretch">
+                                        <div className="text-muted text-[15px]/[20px] items-center font-normal justify-start min-w-0 wrap-break-word flex">
+                                          <MdMoreHoriz className="w-[1.25em] fill-muted align-text-bottom max-w-full h-[1.25em] inline-block" />
+                                        </div>
+                                      </button>
+                                    </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                          {/* Caption */}
-                          <div className="text-foreground text-[15px]/[20px] wrap-break-word relative font-normal min-w-0">
-                            <span className="wrap-break-word min-w-0">{post.text}</span>
-                          </div>
-                          {/* Attached Files */}
-                          {post.file_urls && post.file_urls.length > 0 && (
-                            <div className="mt-2 flex flex-wrap gap-2">
-                              {post.file_urls.map((url: string) =>
-                                url.match(/\.(mp4|webm|ogg)$/i) ? (
-                                  <video key={url} src={url} controls className="max-w-full max-h-80 rounded" />
-                                ) : (
-                                  <img key={url} src={url} alt="attachment" className="max-w-full max-h-80 rounded" />
-                                )
-                              )}
+                            {/* Caption */}
+                            <div className="text-foreground text-[15px]/[20px] wrap-break-word relative font-normal min-w-0">
+                              <span className="wrap-break-word min-w-0">{post.text}</span>
                             </div>
-                          )}
-                          {/* Toolbar */}
-                          <div className="gap-x-[4px] mt-[12px] justify-between max-w-[600px] flex flex-row items-stretch">
-                            <div className="justify-start flex flex-row flex-1">
-                              <button className="cursor-pointer min-h-[20px] justify-center overflow-visible ">
-                                <div className="flex flex-row text-muted text-[15px]/[20px] wrap-break-word min-w-0 justify-start items-center font-normal">
-                                  {/* Icon */}
-                                  <BsChat className="w-[1.25em] max-w-full align-text-bottom fill-muted relative h-[1.25em] inline-block" />
-                                  {/* Amt. */}
-                                  <div className="min-w-[calc(1em+24px)] wrap-break-word text-[13px]/[16px] px-[4px]">
-                                    <span className="min-w-0 wrap-break-word">{stats.comments}</span>
+                            {/* Attached Files */}
+                            {post.file_urls && post.file_urls.length > 0 && (
+                              <div className="mt-2 flex flex-wrap gap-2">
+                                {post.file_urls.map((url: string) =>
+                                  url.match(/\.(mp4|webm|ogg)$/i) ? (
+                                    <video key={url} src={url} controls className="max-w-full max-h-80 rounded" />
+                                  ) : (
+                                    <img key={url} src={url} alt="attachment" className="max-w-full max-h-80 rounded" />
+                                  )
+                                )}
+                              </div>
+                            )}
+                            {/* Toolbar */}
+                            <div className="gap-x-[4px] mt-[12px] justify-between max-w-[600px] flex flex-row items-stretch">
+                              <div className="justify-start flex flex-row flex-1">
+                                <button className="cursor-pointer min-h-[20px] justify-center overflow-visible ">
+                                  <div className="flex flex-row text-muted text-[15px]/[20px] wrap-break-word min-w-0 justify-start items-center font-normal">
+                                    {/* Icon */}
+                                    <BsChat className="w-[1.25em] max-w-full align-text-bottom fill-muted relative h-[1.25em] inline-block" />
+                                    {/* Amt. */}
+                                    <div className="min-w-[calc(1em+24px)] wrap-break-word text-[13px]/[16px] px-[4px]">
+                                      <span className="min-w-0 wrap-break-word">{stats.comments}</span>
+                                    </div>
                                   </div>
-                                </div>
-                              </button>
-                            </div>
-                            <div className="justify-start flex flex-row flex-1">
-                              <button className="cursor-pointer min-h-[20px] justify-center overflow-visible ">
-                                <div className="flex flex-row text-muted text-[15px]/[20px] wrap-break-word min-w-0 justify-start items-center font-normal">
-                                  {/* Icon */}
-                                  <AiOutlineRetweet className="w-[1.25em] max-w-full align-text-bottom fill-muted relative h-[1.25em] inline-block" />
-                                  {/* Amt. */}
-                                  <div className="min-w-[calc(1em+24px)] wrap-break-word text-[13px]/[16px] px-[4px]">
-                                    <span className="min-w-0 wrap-break-word">{stats.reposts}</span>
+                                </button>
+                              </div>
+                              <div className="justify-start flex flex-row flex-1">
+                                <button className="cursor-pointer min-h-[20px] justify-center overflow-visible ">
+                                  <div className="flex flex-row text-muted text-[15px]/[20px] wrap-break-word min-w-0 justify-start items-center font-normal">
+                                    {/* Icon */}
+                                    <AiOutlineRetweet className="w-[1.25em] max-w-full align-text-bottom fill-muted relative h-[1.25em] inline-block" />
+                                    {/* Amt. */}
+                                    <div className="min-w-[calc(1em+24px)] wrap-break-word text-[13px]/[16px] px-[4px]">
+                                      <span className="min-w-0 wrap-break-word">{stats.reposts}</span>
+                                    </div>
                                   </div>
-                                </div>
-                              </button>
-                            </div>
-                            <div className="justify-start flex flex-row flex-1">
-                              <button className="cursor-pointer min-h-[20px] justify-center overflow-visible ">
-                                <div className="flex flex-row text-muted text-[15px]/[20px] wrap-break-word min-w-0 justify-start items-center font-normal">
-                                  {/* Icon */}
-                                  <AiOutlineHeart className="w-[1.25em] max-w-full align-text-bottom fill-muted relative h-[1.25em] inline-block" />
-                                  {/* Amt. */}
-                                  <div className="min-w-[calc(1em+24px)] wrap-break-word text-[13px]/[16px] px-[4px]">
-                                    <span className="min-w-0 wrap-break-word">{stats.likes}</span>
+                                </button>
+                              </div>
+                              <div className="justify-start flex flex-row flex-1">
+                                <button className="cursor-pointer min-h-[20px] justify-center overflow-visible ">
+                                  <div className="flex flex-row text-muted text-[15px]/[20px] wrap-break-word min-w-0 justify-start items-center font-normal">
+                                    {/* Icon */}
+                                    <AiOutlineHeart className="w-[1.25em] max-w-full align-text-bottom fill-muted relative h-[1.25em] inline-block" />
+                                    {/* Amt. */}
+                                    <div className="min-w-[calc(1em+24px)] wrap-break-word text-[13px]/[16px] px-[4px]">
+                                      <span className="min-w-0 wrap-break-word">{stats.likes}</span>
+                                    </div>
                                   </div>
-                                </div>
-                              </button>
-                            </div>
-                            <div className="justify-start flex flex-row flex-1">
-                              <button className="cursor-pointer min-h-[20px] justify-center overflow-visible ">
-                                <div className="flex flex-row text-muted text-[15px]/[20px] wrap-break-word min-w-0 justify-start items-center font-normal">
-                                  {/* Icon */}
-                                  <IoStatsChart className="w-[1.25em] max-w-full align-text-bottom fill-muted relative h-[1.25em] inline-block" />
-                                  {/* Amt. */}
-                                  <div className="min-w-[calc(1em+24px)] wrap-break-word text-[13px]/[16px] px-[4px]">
-                                    <span className="min-w-0 wrap-break-word">{stats.views}</span>
+                                </button>
+                              </div>
+                              <div className="justify-start flex flex-row flex-1">
+                                <button className="cursor-pointer min-h-[20px] justify-center overflow-visible ">
+                                  <div className="flex flex-row text-muted text-[15px]/[20px] wrap-break-word min-w-0 justify-start items-center font-normal">
+                                    {/* Icon */}
+                                    <IoStatsChart className="w-[1.25em] max-w-full align-text-bottom fill-muted relative h-[1.25em] inline-block" />
+                                    {/* Amt. */}
+                                    <div className="min-w-[calc(1em+24px)] wrap-break-word text-[13px]/[16px] px-[4px]">
+                                      <span className="min-w-0 wrap-break-word">{stats.views}</span>
+                                    </div>
                                   </div>
-                                </div>
-                              </button>
-                            </div>
-                            <div className="justify-start flex flex-row mr-[8px]">
-                              <button className="cursor-pointer min-h-[20px] justify-center overflow-visible ">
-                                <div className="text-muted text-[15px]/[20px] wrap-break-word min-w-0 justify-start items-center">
-                                  <IoBookmarkOutline className="w-[1.25em] align-text-bottom fill-muted max-w-full h-[1.25em] inline-block relative" />
-                                </div>
-                              </button>
-                            </div>
-                            <div className="justify-start flex flex-row">
-                              <button className="cursor-pointer min-h-[20px] justify-center overflow-visible ">
-                                <div className="text-muted text-[15px]/[20px] wrap-break-word min-w-0 justify-start items-center">
-                                  <IoShareOutline className="w-[1.25em] align-text-bottom fill-muted max-w-full h-[1.25em] inline-block relative" />
-                                </div>
-                              </button>
+                                </button>
+                              </div>
+                              <div className="justify-start flex flex-row mr-[8px]">
+                                <button className="cursor-pointer min-h-[20px] justify-center overflow-visible ">
+                                  <div className="text-muted text-[15px]/[20px] wrap-break-word min-w-0 justify-start items-center">
+                                    <IoBookmarkOutline className="w-[1.25em] align-text-bottom fill-muted max-w-full h-[1.25em] inline-block relative" />
+                                  </div>
+                                </button>
+                              </div>
+                              <div className="justify-start flex flex-row">
+                                <button className="cursor-pointer min-h-[20px] justify-center overflow-visible ">
+                                  <div className="text-muted text-[15px]/[20px] wrap-break-word min-w-0 justify-start items-center">
+                                    <IoShareOutline className="w-[1.25em] align-text-bottom fill-muted max-w-full h-[1.25em] inline-block relative" />
+                                  </div>
+                                </button>
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
-                    </div>
-                  </article>
+                    </article>
+                  </div>
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>
+
       </section>
     </div>
   );
