@@ -5,7 +5,7 @@ import { BiPoll } from "react-icons/bi";
 import { HiOutlineEmojiHappy } from "react-icons/hi";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 
-const PostToolBar = () => {
+const PostingToolBar = () => {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleButtonClick = () => {
@@ -101,4 +101,4 @@ const PostToolBar = () => {
     );
 };
 
-export default PostToolBar;
+export default PostingToolBar;

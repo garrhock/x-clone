@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { post } from './actions'
 import { createClient } from '@/lib/supabase/client'
-import PostToolBar from '@/components/posts/post-toolbar';
+import PostingToolBar from '@/components/posts/toolbars/posting-toolbar';
 import ProfilePicture from '../ui/avatar';
 import { getProfileById } from '@/lib/supabase/queries';
 
@@ -85,7 +85,7 @@ export default function PostForm() {
         <div className="sticky bottom-[-1px] pb-[8px] top-0 flex flex-col">
           <div className="justify-between items-center flex flex-row w-full">
             {/* Toolbar */}
-            <PostToolBar/>
+            <PostingToolBar/>
             {/* Post Button */}
             <div className="mt-[8px] items-center flex flex-row">
               <button

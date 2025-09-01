@@ -6,7 +6,7 @@ import { BiPoll } from "react-icons/bi";
 import { HiOutlineEmojiHappy } from "react-icons/hi";
 import { RiCalendarScheduleLine } from "react-icons/ri";
 import RightSideBar from '../right-sidebar/RightSideBar';
-import Timeline from '../posts/get-timeline';
+import Timeline from './get-timeline';
 import Text from '../text';
 const TOOLBAR_ITEMS = [
   { title: 'Media', icon: MdPhoto },
