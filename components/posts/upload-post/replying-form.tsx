@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { post } from './actions'
+import { post } from '../actions'
 import { createClient } from '@/lib/supabase/client'
 import PostingToolBar from '@/components/posts/toolbars/posting-toolbar';
-import ProfilePicture from '../ui/avatar';
+import ProfilePicture from '../../ui/avatar';
 import { getProfileById } from '@/lib/supabase/queries';
 
 export default function PostForm() {
@@ -71,21 +71,19 @@ export default function PostForm() {
         <ProfilePicture userId={user.id} avatarUrl={user.avatar_url} />
       </div>
       {/* Text & Toolbar */}
-      <div className="flex flex-col pt-[4px] justify-center basis-0 flex-grow static">
+      <div className="flex flex-row pt-[4px] justify-center basis-0 flex-grow static">
         <textarea
           name="content"
           value={content}
           onChange={e => setContent(e.target.value)}
-          placeholder="What's happening?"
+          placeholder="Post Your Reply"
           className="placeholder-muted ml-[2px] py-[12px] w-full text-[20px] font-normal bg-transparent border-none outline-none resize-none"
           rows={1}
           required
           disabled={isPosting}
         />
-        <div className="sticky bottom-[-1px] pb-[8px] top-0 flex flex-col">
+        <div className="sticky bottom-[-1px] pb-[8px] top-0 flex flex-row">
           <div className="justify-between items-center flex flex-row w-full">
-            {/* Toolbar */}
-            <PostingToolBar/>
             {/* Post Button */}
             <div className="mt-[8px] items-center flex flex-row">
               <button
@@ -95,7 +93,7 @@ export default function PostForm() {
               >
                 <div className="text-[15px] wrap-break-word text-center font-bold items-center flex flex-row justify-center flex-grow">
                   <span className="text-background text-[15px] wrap-break-word max-w-full min-w-0 overflow-ellipsis overflow-hidden ">
-                    {isPosting ? 'Posting...' : 'Post'}
+                    {isPosting ? 'Posting...' : 'Reply'}
                   </span>
                 </div>
               </button>

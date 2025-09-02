@@ -8,6 +8,7 @@ import Link from "next/link";
 import { IoArrowBackOutline} from "react-icons/io5";
 import { MdMoreHoriz } from "react-icons/md";
 import FullPostInteractions from "@/components/posts/toolbars/full-post-interactions";
+import ReplyingForm from "@/components/posts/upload-post/replying-form";
 
 
 export default async function PostPage({ params }: { params: { postId: string } }) {
@@ -159,7 +160,9 @@ export default async function PostPage({ params }: { params: { postId: string } 
                 <div className="py-2 border-b-[1px] border-border" />
                 <FullPostInteractions stats={stats} />
                 <div className="py-2 border-b-[1px] border-border" />
+                <ReplyingForm />
                 </div>
+                <div className="py-2 border-b-[1px] border-border" />
               </div>
               <RightSideBar   />
             </div>

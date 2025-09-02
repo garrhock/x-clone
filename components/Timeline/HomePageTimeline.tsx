@@ -1,5 +1,5 @@
 import React from 'react'
-import PostForm from '../posts/post-form'
+import PostForm from '../posts/upload-post/posting-form'
 import { MdPhoto } from "react-icons/md";
 import { AiOutlineGif } from "react-icons/ai";
 import { BiPoll } from "react-icons/bi";
