@@ -42,7 +42,7 @@ export default function ProfilePicture({
         <img
           src={avatarUrl}
           alt="User avatar"
-          className="w-full h-full rounded-full object-cover cursor-pointer"
+          className="w-full h-full rounded-full object-cover cursor-pointer hover:opacity-85"
           onClick={() => router.push(`/profile-page/${userId}`)}
           style={{ zIndex: 1, position: "relative" }}
         />

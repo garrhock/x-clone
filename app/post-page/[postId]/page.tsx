@@ -1,22 +1,22 @@
-import { getProfileById,getPostStats, getPostById, getPostComments } from "@/lib/supabase/queries";
+import { getPostById, getPostComments, getPostStats } from "@/lib/supabase/queries";
 import { ProfilePicture } from "@/components/profile";
 import type { Post, Comment, Profile } from "@/lib/supabase/types";
 import LeftSideBar from "@/components/left-sidebar/LeftSideBar";
 import RightSideBar from "@/components/right-sidebar/RightSideBar";
 import Text from "@/components/text";
 import Link from "next/link";
-import { IoArrowBackOutline, IoBookmarkOutline, IoShareOutline, IoStatsChart } from "react-icons/io5";
+import { IoArrowBackOutline} from "react-icons/io5";
 import { MdMoreHoriz } from "react-icons/md";
-import { BsChat } from "react-icons/bs";
-import { AiOutlineHeart, AiOutlineRetweet } from "react-icons/ai";
+import FullPostInteractions from "@/components/posts/toolbars/full-post-interactions";
+
 
 export default async function PostPage({ params }: { params: { postId: string } }) {
-  const { postId } = params;
+  const { postId } = await params;
 
   // Fetch the post and its comments
   const post: Post | null = await getPostById(postId);
   const comments: Comment[] = await getPostComments(postId);
-
+  const stats = await getPostStats(postId);
   if (!post) {
     return <div className="text-muted text-center py-8">Post not found.</div>;
   }
@@ -42,7 +42,7 @@ export default async function PostPage({ params }: { params: { postId: string } 
     }
     return "now";
   }
-  
+   
   return (
     <div className="w-full h-screen flex justify-center items-center relative bg-black text-white">
       <div className="w-full max-w-[1385px] h-full flex relative">
@@ -111,13 +111,13 @@ export default async function PostPage({ params }: { params: { postId: string } 
                                 <div className="items-baseline flex flex-row">
                                   {/* @ */}
                                   <div className="max-w-full">
-                                    <a href={`/profile-page/${userProfile.id}`} className="cursor-pointer">
+                                    <Link href={`/profile-page/${userProfile.id}`} className="cursor-pointer">
                                       <div className="text-muted text-[15px]/[20px] font-normal min-w-0 items-center wrap-break-word overflow-hidden">
                                         <span className="wrap-break-word min-w-0">
                                           @{userProfile?.username || "unknown"}
                                         </span>
                                       </div>
-                                    </a>
+                                    </Link>
                                   </div>
                                 </div>
                               </div>
@@ -156,6 +156,9 @@ export default async function PostPage({ params }: { params: { postId: string } 
                     )}
                   </div>
                 )}
+                <div className="py-2 border-b-[1px] border-border" />
+                <FullPostInteractions stats={stats} />
+                <div className="py-2 border-b-[1px] border-border" />
                 </div>
               </div>
               <RightSideBar   />
