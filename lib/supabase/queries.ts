@@ -1,6 +1,45 @@
 import { createClient } from "@/lib/supabase/client";
-
+import type { Post } from "@/lib/supabase/types";
 const supabase = createClient();
+
+
+export async function fetchPosts(): Promise<Post[]> {
+
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*, profiles:profiles!posts_user_id_fkey(*)")
+    .is("parent_id", null)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+
+  return (
+    (data || []).map((post: any) => ({
+      ...post,
+      // Normalize embedded profile to a single object (handle array/object)
+      profiles: Array.isArray(post.profiles) ? post.profiles[0] : post.profiles,
+    })) as Post[]
+  );
+}
+
+export async function fetchPostsByUser(userId: string): Promise<Post[]> {
+
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*, profiles:profiles!posts_user_id_fkey(*)")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+
+  return (
+    (data || []).map((post: any) => ({
+      ...post,
+      profiles: Array.isArray(post.profiles) ? post.profiles[0] : post.profiles,
+    })) as Post[]
+  );
+}
+
 
 export async function getPostStats(postId: string) {
   

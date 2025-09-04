@@ -1,6 +1,4 @@
-import ProfilePicture from '../../ui/avatar';
-import Text from '../../text';
-import Link from 'next/link';
+
 import PostBox from '../PostBox';
 
 export default function Reply({ reply }: { reply: any }) {

@@ -1,5 +1,4 @@
-import { fetchPostsByUser } from "@/lib/supabase/fetch-posts";
-import { getPostStats } from "@/lib/supabase/queries";
+import { fetchPostsByUser, getPostStats } from "@/lib/supabase/queries";
 import PostBox from "../posts/PostBox";
 
 export default async function UserPosts({ userId }: { userId: string }) {

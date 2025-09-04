@@ -4,9 +4,7 @@ import React from 'react'
 import { AiOutlineHeart, AiOutlineRetweet } from 'react-icons/ai';
 import { BsChat } from "react-icons/bs";
 import { IoBookmarkOutline, IoShareOutline, IoStatsChart } from 'react-icons/io5';
-import { getPostStats } from "@/lib/supabase/queries";
-import { fetchPosts } from '@/lib/supabase/fetch-posts';
-import type { Post } from "@/lib/supabase/types";
+
 
 interface PreviewPostInteractionsProps {
   stats: {
@@ -25,8 +23,8 @@ const PreviewPostInteractions: React.FC<PreviewPostInteractionsProps> = ({ stats
           <div className="flex flex-row text-muted text-[15px]/[20px] wrap-break-word min-w-0 justify-start items-center font-normal">
             <BsChat className="w-[1.25em] max-w-full align-text-bottom fill-muted relative h-[1.25em] inline-block" />
             {stats.comments > 0 && (
-              <div className="min-w-[calc(1em+24px)] wrap-break-word text-[13px]/[16px] px-[4px]">
-                <span className="min-w-0 wrap-break-word">{stats.comments}</span>
+              <div className=" wrap-break-word text-[13px]/[16px] px-[4px] ">
+                <span className="min-w-0 wrap-break-word flex">{stats.comments}</span>
               </div>
             )}
           </div>

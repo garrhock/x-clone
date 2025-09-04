@@ -1,5 +1,4 @@
-import { fetchPosts } from "@/lib/supabase/fetch-posts";
-import { getPostStats } from "@/lib/supabase/queries";
+import { getPostStats, fetchPosts } from "@/lib/supabase/queries";
 import PostBox from "../posts/PostBox";
 
 export default async function Timeline() {
