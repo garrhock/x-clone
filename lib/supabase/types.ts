@@ -17,6 +17,7 @@ export type Post = {
   views: number;
   profiles: Profile;
   bookmarks: number;
+  parent_id?: string;
 };
 
 export interface Comment {

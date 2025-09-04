@@ -1,4 +1,4 @@
-import { getPostById, getPostComments, getPostStats } from "@/lib/supabase/queries";
+import { getPostById, getPostReplies, getPostStats } from "@/lib/supabase/queries";
 import { ProfilePicture } from "@/components/profile";
 import type { Post, Comment, Profile } from "@/lib/supabase/types";
 import LeftSideBar from "@/components/left-sidebar/LeftSideBar";
@@ -9,6 +9,7 @@ import { IoArrowBackOutline} from "react-icons/io5";
 import { MdMoreHoriz } from "react-icons/md";
 import FullPostInteractions from "@/components/posts/toolbars/full-post-interactions";
 import ReplyingForm from "@/components/posts/upload-post/replying-form";
+import Reply from "@/components/posts/replies/replies";
 
 
 export default async function PostPage({ params }: { params: { postId: string } }) {
@@ -16,7 +17,7 @@ export default async function PostPage({ params }: { params: { postId: string } 
 
   // Fetch the post and its comments
   const post: Post | null = await getPostById(postId);
-  const comments: Comment[] = await getPostComments(postId);
+  const replies: Comment[] = await getPostReplies(postId);
   const stats = await getPostStats(postId);
   if (!post) {
     return <div className="text-muted text-center py-8">Post not found.</div>;
@@ -160,9 +161,17 @@ export default async function PostPage({ params }: { params: { postId: string } 
                 <div className="py-2 border-b-[1px] border-border" />
                 <FullPostInteractions stats={stats} />
                 <div className="py-2 border-b-[1px] border-border" />
-                <ReplyingForm />
+                <ReplyingForm parentPostId={post.id} />
                 </div>
                 <div className="py-2 border-b-[1px] border-border" />
+                {/* Replies Section */}
+                <div>
+                  {replies.length === 0 ? (
+                    <div className="text-muted text-center py-4">No replies yet</div>
+                  ) : (
+                    replies.map((reply) => <Reply key={reply.id} reply={reply} />)
+                  )}
+                </div>
               </div>
               <RightSideBar   />
             </div>

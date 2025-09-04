@@ -7,7 +7,7 @@ export async function getPostStats(postId: string) {
 
   const [{ count: likes }, { count: comments }, { count: reposts }, { count: views }] = await Promise.all([
     supabase.from("likes").select("*", { count: "exact", head: true }).eq("post_id", postId),
-    supabase.from("comments").select("*", { count: "exact", head: true }).eq("post_id", postId),
+    supabase.from("posts").select("*", { count: "exact", head: true }).eq("parent_id", postId),
     supabase.from("reposts").select("*", { count: "exact", head: true }).eq("post_id", postId),
     supabase.from("views").select("*", { count: "exact", head: true }).eq("post_id", postId),
   ]);
@@ -141,11 +141,23 @@ export async function getPostById(postId: string) {
     .then(({ data }) => data);
 }
 
-export async function getPostComments(postId: string) {
+export async function getPostReplies(postId: string) {
   return await supabase
-    .from("comments")
-    .select("*, profiles:profiles!comments_user_id_fkey(*)")
-    .eq("post_id", postId)
+    .from("posts")
+    .select("*, profiles:profiles!posts_user_id_fkey(*)")
+    .eq("parent_id", postId)
     .order("created_at", { ascending: true })
     .then(({ data }) => data || []);
+}
+
+
+export async function addReply(userId: string, parentId: string, text: string) {
+  const { data, error } = await supabase
+    .from("posts")
+    .insert([{ user_id: userId, parent_id: parentId, text }])
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
 }
