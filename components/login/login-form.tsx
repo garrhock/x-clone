@@ -47,32 +47,34 @@ export default function LoginForm() {
   };
 
   return (
-    <form onSubmit={handleLogin} className="max-w-md mx-auto mt-8 flex flex-col gap-4">
-      <h2 className="text-2xl font-bold mb-2">Login</h2>
-      <input
-        type="text"
-        placeholder="Username or Email"
-        required
-        value={identifier}
-        onChange={e => setIdentifier(e.target.value)}
-        className="border rounded px-3 py-2"
-      />
-      <input
-        type="password"
-        placeholder="Password"
-        required
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        className="border rounded px-3 py-2"
-      />
-      {error && <div className="text-red-500">{error}</div>}
-      <button
-        type="submit"
-        disabled={loading}
-        className="bg-blue-600 text-white rounded px-4 py-2 font-semibold"
-      >
-        {loading ? "Logging in..." : "Login"}
-      </button>
-    </form>
+    <div className="max-w-md mx-auto mt-16 bg-white rounded-lg shadow-lg p-8 flex flex-col gap-4">
+      <h2 className="text-2xl font-bold mb-2 text-center">Login</h2>
+      <form onSubmit={handleLogin} className="flex flex-col gap-4">
+        <input
+          type="text"
+          placeholder="Username or Email"
+          required
+          value={identifier}
+          onChange={e => setIdentifier(e.target.value)}
+          className="border rounded px-3 py-2"
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          required
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          className="border rounded px-3 py-2"
+        />
+        {error && <div className="text-red-500 text-center">{error}</div>}
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-blue-600 text-white rounded px-4 py-2 font-semibold"
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
+      </form>
+    </div>
   );
 }

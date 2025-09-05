@@ -14,6 +14,15 @@ import {
 } from "@/components/ui/sidebar";
 import Text from "@/components/text";
 import { getProfileById } from "@/lib/supabase/queries";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import LogoutButton from "@/app/auth/sign-out/sign-out";
 
 const NAVIGATION_ITEMS = [
   { title: "Home", icon: GoHomeFill, href: "/" },
@@ -84,9 +93,10 @@ const LeftSideBar = () => {
               Post
             </button>
           </div>
-          {user && (
-              <Link href={`/profile-page/${user.id}`}>
-                <button className="p-[12px] rounded-full flex flex-row items-center cursor-pointer outline-none w-full my-3">
+            {user && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="p-[12px] rounded-full flex flex-row items-center cursor-pointer outline-none w-full my-3 hover:bg-foreground/5 transition duration-200 ease-in-out">
                   <div className="w-[40px] h-[40px] rounded-full overflow-hidden flex-shrink-0">
                     <img
                       src={user.avatar_url || "/default-avatar.jpg"}
@@ -95,10 +105,10 @@ const LeftSideBar = () => {
                     />
                   </div>
                   <div className="flex flex-col align-center min-w-0 mx-3 flex-1 w-full">
-                    <Text variant = "subheading" color = "foreground">
+                    <Text variant="subheading" color="foreground">
                       <span className="whitespace-nowrap overflow-ellipsis block">{user.full_name}</span>
                     </Text>
-                    <Text variant = "subheading" color = "foreground">
+                    <Text variant="subheading" color="foreground">
                       <span className="text-muted font-normal">@{user.username}</span>
                     </Text>
                   </div>
@@ -106,7 +116,13 @@ const LeftSideBar = () => {
                     <BsThreeDots />
                   </div>
                 </button>
-              </Link>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent side="top" align="start" className="hover:bg-foreground/5 ease-in transition-colors duration-200 max-w-[360px] min-w-[260px] min-h-8 max-h-[480px] rounded-2xl">
+                <DropdownMenuItem asChild>
+                    <LogoutButton username={user.username} />
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             )}
         </Sidebar>
       </SidebarProvider>
