@@ -20,7 +20,7 @@ export default async function Timeline() {
   return (
     <div>
       <section className="flex flex-col items-stretch">
-        <div className="relative min-h-screen">
+        <div className="relative">
           {posts.map((post, idx) => {
             const stats = statsArray[idx];
             return (

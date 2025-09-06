@@ -62,7 +62,7 @@ export default function ReplyForm({ parentPostId, onReply }: ReplyFormProps) {
           text: content,
           file_urls: fileUrls,
           user_id: user.id,
-          parent_post_id: parentPostId, // link reply to parent
+          parent_id: parentPostId, // link reply to parent
         })
 
       if (insertError) throw insertError

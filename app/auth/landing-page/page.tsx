@@ -15,7 +15,7 @@ export default function LandingPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   // Helper: check if any dialog is open
-  const isDialogOpen = ["nameEmail", "userPass", "success", "loginEmail", "loginPass"].includes(step ?? "");
+  const isDialogOpen = ["nameEmail", "password", "username", "profilePic", "success", "loginEmail", "loginPass"].includes(step ?? "");
 
   // Handle sign up first step (name/email)
   const handleNameEmail = (e: React.FormEvent) => {
@@ -76,6 +76,14 @@ const handleProfilePicChange = async (e: React.ChangeEvent<HTMLInputElement>) =>
     const { data: publicUrlData } = supabase.storage
       .from("profile-picture")
       .getPublicUrl(data.path);
+
+    // Update profile.avatar_url in the database
+    const { error: updateError } = await supabase
+      .from("profiles")
+      .update({ avatar_url: publicUrlData.publicUrl })
+      .eq("id", user.id);
+
+    if (updateError) throw updateError;
 
     setForm(f => ({ ...f, profilePic: publicUrlData.publicUrl }));
     setStep("loginSuccess");
@@ -156,7 +164,7 @@ const handleUsername = async (e: React.FormEvent) => {
     <main className="bg-background flex min-h-screen items-center justify-center relative">
       {isDialogOpen && (
         <div
-          className="fixed inset-0 bg-slate-500 z-10 transition-opacity"
+          className="fixed inset-0 bg-slate-600 opacity-50 z-10 transition-opacity"
           aria-hidden="true"
         ></div>
       )}
@@ -221,15 +229,11 @@ const handleUsername = async (e: React.FormEvent) => {
                     className="bg-background border border-border rounded py-4 px-2 w-[438px] h-[60px]"
                   />
                   {error && <div className="text-red-500">{error}</div>}
-                  <button type="submit" className="bg-foreground text-background rounded-full px-4 py-4 font-semibold w-full my-6" disabled={loading}>
+                  <button type="submit" className="absolute bg-foreground text-background rounded-full px-4 py-4 w-[calc(73%)] font-semibold bottom-5" disabled={loading}>
                     Next
                   </button>
                 </form>
               </div>
-            </div>
-            <div className="flex flex-row mb-6">
-              <span className="text-muted whitespace-pre">Already have an account? </span>
-              <button type="button" className="text-highlight" onClick={() => setStep("loginEmail")}>Sign in</button>
             </div>
           </div>
         </DialogContent>
@@ -245,9 +249,10 @@ const handleUsername = async (e: React.FormEvent) => {
               </div>
               <div>
                 <div className="justify-start text-left">
-                  <DialogTitle className="mt-5 mb-8">You'll need a password</DialogTitle>
+                  <DialogTitle className="mt-5 mb-2">You'll need a password</DialogTitle>
+                  <span className = "text-muted">Make sure it's 8 characters or more.</span>
                 </div>
-                <form onSubmit={handlePassword} className="flex flex-col gap-8 w-full">
+                <form onSubmit={handlePassword} className="flex flex-col gap-8 mt-6 w-full">
                   <input
                     type="password"
                     placeholder="Password"
@@ -258,8 +263,8 @@ const handleUsername = async (e: React.FormEvent) => {
                     className="bg-background border border-border rounded py-4 px-2 w-[438px] h-[60px]"
                   />
                   {error && <div className="text-red-500">{error}</div>}
-                  <button type="submit" className="bg-foreground text-background rounded-full px-4 py-4 font-semibold w-full my-6" disabled={loading}>
-                    Next
+                  <button type="submit" className="absolute bg-foreground text-background rounded-full px-3 py-4 font-semibold w-[calc(72.5%)] my-6 bottom-0 " disabled={loading}>
+                    <span className="font-bold">Sign Up</span>
                   </button>
                 </form>
               </div>
@@ -277,9 +282,10 @@ const handleUsername = async (e: React.FormEvent) => {
                 <BsTwitterX className="size-7 mt-3" />
               </div>
                 <div className="justify-start text-left">
-                  <DialogTitle className="mt-5 mb-8">What should we call you?</DialogTitle>
+                  <DialogTitle className="mt-5 mb-2">What should we call you?</DialogTitle>
+                  <span className="mb-8 text-muted">Your @username is unique. You can always change it later.</span>
                 </div>
-                <form onSubmit={handleUsername} className="flex flex-col gap-8 w-full">
+                <form onSubmit={handleUsername} className="flex flex-col gap-8 w-full mt-6">
                   <input
                     type="text"
                     placeholder="Username"
@@ -290,8 +296,8 @@ const handleUsername = async (e: React.FormEvent) => {
                     className="bg-background border border-border rounded py-4 px-2 w-[438px] h-[60px]"
                   />
                   {error && <div className="text-red-500">{error}</div>}
-                  <button type="submit" className="bg-foreground text-background rounded-full px-4 py-4 font-semibold w-full mt-6" disabled={loading}>
-                    Sign Up
+                  <button type="submit" className="absolute bg-foreground text-background rounded-full px-3 py-4 font-semibold w-[calc(72.5%)] my-6 bottom-0 " disabled={loading}>
+                    <span className="font-bold">Sign Up</span>
                   </button>
                 </form>
             </div>
@@ -400,7 +406,7 @@ const handleUsername = async (e: React.FormEvent) => {
                   onChange={(e) =>
                     setLoginForm((f) => ({ ...f, email: e.target.value }))
                   }
-                  className="w-[438px] h-[60px] bg-background border border-border rounded pt-3 pb-2 px-2 mt-4 "
+                  className="w-[300px] h-[60px] bg-background border border-border rounded pt-3 pb-2 px-2 mt-4 "
                 />
                 {error && <div className="text-red-500">{error}</div>}
                 <button
