@@ -1,11 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { post } from '../actions'
 import { createClient } from '@/lib/supabase/client'
 import PostingToolBar from '@/components/posts/toolbars/posting-toolbar';
 import ProfilePicture from '../../ui/avatar';
-import { getProfileById } from '@/lib/supabase/queries';
+import { getProfileById } from '@/lib/supabase/queries.client';
 
 export default function PostForm() {
   const [content, setContent] = useState('')
@@ -37,20 +36,31 @@ export default function PostForm() {
       if (files && files.length > 0) {
         for (let i = 0; i < files.length; i++) {
           const file = files[i]
-          const { data, error } = await supabase.storage
+          const ts = Date.now()
+          const path = `public/${ts}-${file.name}`
+          const { error: uploadError } = await supabase.storage
             .from('post-files')
-            .upload(`public/${Date.now()}-${file.name}`, file)
-          if (error) throw error
+            .upload(path, file)
+          if (uploadError) throw uploadError
           const { data: urlData } = supabase.storage
             .from('post-files')
-            .getPublicUrl(`public/${Date.now()}-${file.name}`)
+            .getPublicUrl(path)
           fileUrls.push(urlData.publicUrl)
         }
       }
-      const formData = new FormData()
-      formData.append('content', content)
-      fileUrls.forEach(url => formData.append('file_urls[]', url))
-      await post(formData)
+      // Insert post directly via browser client
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('Not logged in')
+      const { error: insertError } = await supabase
+        .from('posts')
+        .insert({
+          user_id: user.id,
+          text: content,
+          file_urls: fileUrls,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        })
+      if (insertError) throw insertError
       setContent('')
       setFiles(null)
     } catch (err: any) {

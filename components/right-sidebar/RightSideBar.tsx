@@ -6,19 +6,30 @@ import Container from './container';
 import Text from '@/components/text'
 import { ProfilePicture, NameAndTag, FollowButton } from '@/components/profile'
 import SearchBar from '@/components/ui/search-bar'
-import { getProfileById } from '@/lib/supabase/queries';
+import { getProfileById } from '@/lib/supabase/queries.client';
 const RightSideBar = () => {
     const [suggestedUsers, setSuggestedUsers] = useState<any[]>([]);
 
     useEffect(() => {
         const fetchUsers = async () => {
-            const response = await fetch('/api/suggested-users'); // Example endpoint
-            const userIds: string[] = await response.json();
+            try {
+                const response = await fetch('/api/suggested-users'); // Example endpoint
+                const contentType = response.headers.get('content-type') || '';
+                if (!response.ok || !contentType.includes('application/json')) {
+                    console.warn('suggested-users endpoint missing or not JSON; skipping');
+                    return;
+                }
+                const userIds: string[] = await response.json();
 
-            const profiles = await Promise.all(
-                userIds.map(async (id) => await getProfileById(id))
-            );
-            setSuggestedUsers(profiles.filter(Boolean)); // Remove nulls
+                const profiles = await Promise.all(
+                    userIds.map(async (id) => {
+                        try { return await getProfileById(id); } catch { return null; }
+                    })
+                );
+                setSuggestedUsers(profiles.filter(Boolean) as any[]); // Remove nulls
+            } catch (e) {
+                console.error('Failed to load suggested users', e);
+            }
         };
         fetchUsers();
     }, []);

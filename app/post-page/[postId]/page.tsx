@@ -1,6 +1,6 @@
-import { getPostById, getPostReplies, getPostStats } from "@/lib/supabase/queries";
+import { getPostById, getPostReplies, getPostStats } from "@/lib/supabase/queries.server";
 import { ProfilePicture } from "@/components/profile";
-import type { Post, Comment, Profile } from "@/lib/supabase/types";
+import type { Post, Profile } from "@/lib/supabase/types";
 import LeftSideBar from "@/components/left-sidebar/LeftSideBar";
 import RightSideBar from "@/components/right-sidebar/RightSideBar";
 import Text from "@/components/text";
@@ -17,7 +17,7 @@ export default async function PostPage({ params }: { params: { postId: string } 
 
   // Fetch the post and its comments
   const post: Post | null = await getPostById(postId);
-  const replies: Comment[] = await getPostReplies(postId);
+  const replies: Post[] = await getPostReplies(postId);
   const stats = await getPostStats(postId);
   if (!post) {
     return <div className="text-muted text-center py-8">Post not found.</div>;

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import ProfilePicture from '../../ui/avatar'
-import { getProfileById } from '@/lib/supabase/queries'
+import { getProfileById } from '@/lib/supabase/queries.client'
 
 interface ReplyFormProps {
   parentPostId: string // pass the postId you’re replying to

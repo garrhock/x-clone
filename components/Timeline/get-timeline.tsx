@@ -1,8 +1,14 @@
-import { getPostStats, fetchPosts } from "@/lib/supabase/queries";
+import { getPostStats, fetchPosts } from "@/lib/supabase/queries.server";
 import PostBox from "../posts/PostBox";
 
 export default async function Timeline() {
-  const posts = await fetchPosts();
+  let posts = [] as Awaited<ReturnType<typeof fetchPosts>>;
+  try {
+    posts = await fetchPosts();
+  } catch (e) {
+    console.error('Failed to fetch timeline posts:', e);
+    posts = [];
+  }
 
   if (!posts.length) {
     return <div className="text-muted text-center py-8">No posts yet.</div>;

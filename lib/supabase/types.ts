@@ -4,6 +4,10 @@ export type Profile = {
   full_name: string;
   avatar_url: string;
   bio?: string;
+  location?: string;
+  personal_website_link?: string;
+  banner_url?: string;
+  created_at: string;
 };
 
 export type Post = {

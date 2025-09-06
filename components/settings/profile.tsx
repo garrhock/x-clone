@@ -6,7 +6,7 @@ import { RiCameraAiLine } from "react-icons/ri";
 import Text from "@/components/text";
 import ProfilePicture from "@/components/ui/avatar";
 import Banner from "../ui/profile-banner";
-import { getProfileById} from "@/lib/supabase/queries";
+import { getProfileById} from "@/lib/supabase/queries.client";
 
 interface ProfileSettingsProps {
   open: boolean;

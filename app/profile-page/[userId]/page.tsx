@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/menubar";
 import UserTimeline from "@/components/profile/user-posts";
 import ProfileActionButton from "@/components/profile/profile-action-button"; // See below
-import { getProfileById, countFollowers, countFollowing, countPosts } from "@/lib/supabase/queries";
+import { getProfileById, countFollowers, countFollowing, countPosts } from "@/lib/supabase/queries.server";
 import Link from "next/dist/client/link";
 
 

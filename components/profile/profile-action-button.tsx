@@ -9,9 +9,14 @@ export default function ProfileActionButton({ profileId }: { profileId: string }
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data }) => {
-      setUserId(data.user?.id ?? null);
-    });
+    (async () => {
+      try {
+        const { data } = await supabase.auth.getUser();
+        setUserId(data.user?.id ?? null);
+      } catch (e) {
+        console.error('Failed to get current user id', e);
+      }
+    })();
   }, []);
 
   if (!userId) return null; // Not logged in or still loading

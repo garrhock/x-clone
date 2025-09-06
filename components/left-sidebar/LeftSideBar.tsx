@@ -13,7 +13,7 @@ import {
   SidebarMenu,
 } from "@/components/ui/sidebar";
 import Text from "@/components/text";
-import { getProfileById } from "@/lib/supabase/queries";
+import { getProfileById } from "@/lib/supabase/queries.client";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,10 +39,14 @@ const LeftSideBar = () => {
   useEffect(() => {
     const supabase = createClient();
     async function fetchProfile() {
-      const { data: { user: authUser } } = await supabase.auth.getUser();
-      if (!authUser) return;
-      const profile = await getProfileById(authUser.id);
-      if (profile) setUser(profile);
+      try {
+        const { data: { user: authUser } } = await supabase.auth.getUser();
+        if (!authUser) return;
+        const profile = await getProfileById(authUser.id);
+        if (profile) setUser(profile);
+      } catch (err) {
+        console.error("Failed to load current user profile:", err);
+      }
     }
     fetchProfile();
   }, []);

@@ -38,7 +38,7 @@ export default function LoginForm() {
         password,
       });
       if (error) throw error;
-      router.push("/");
+      router.push("./app");
     } catch (err: any) {
       setError(err.message || "Failed to log in");
     } finally {
